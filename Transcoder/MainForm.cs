@@ -29,9 +29,10 @@ namespace Transcoder
 			DragEnter += MainForm_DragEnter;
 			DragDrop += MainForm_DragDrop;
 
-			filesDataGridView.DragEnter += filesDataGridView_DragEnter;
-			filesDataGridView.DragDrop += filesDataGridView_DragDrop;
 			filesDataGridView.CellDoubleClick += filesDataGridView_CellDoubleClick;
+
+			outputTextbox.DragEnter += outputTextbox_DragEnter;
+			outputTextbox.DragDrop += outputTextbox_DragDrop;
 		}
 
 		void MainForm_Load(object sender, EventArgs e) {
@@ -62,23 +63,23 @@ namespace Transcoder
 			});
 		}
 
-		void filesDataGridView_DragEnter(object sender, DragEventArgs e) {
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-		
-		void filesDataGridView_DragDrop(object sender, DragEventArgs e) {
-			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
-
-			if (paths != null && Directory.Exists(paths[0])) {
-				outputTextbox.Text = paths[0];
-			}
-		}
-
 		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
 			var file = TranscoderFiles[e.RowIndex];
 
 			if (!String.IsNullOrEmpty(file.Log)) {
 				MessageBox.Show(file.Log, String.Format("Log: {0}", file.FilePath));
+			}
+		}
+
+		void outputTextbox_DragEnter(object sender, DragEventArgs e) {
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		void outputTextbox_DragDrop(object sender, DragEventArgs e) {
+			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
+
+			if (paths != null && Directory.Exists(paths[0])) {
+				outputTextbox.Text = paths[0];
 			}
 		}
 
