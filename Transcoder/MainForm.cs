@@ -34,16 +34,9 @@ namespace Transcoder
 			filesDataGridView.CellDoubleClick += filesDataGridView_CellDoubleClick;
 		}
 
-		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
-			var file = TranscoderFiles[e.RowIndex];
-
-			if (!String.IsNullOrEmpty(file.Log)) {
-				MessageBox.Show(file.Log, String.Format("Log: {0}", file.FilePath));
-			}
-		}
-
 		void MainForm_Load(object sender, EventArgs e) {
 			filesDataGridView.DataSource = TranscoderFiles;
+			filesDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 		}
 
 		void MainForm_DragEnter(object sender, DragEventArgs e) {
@@ -78,6 +71,14 @@ namespace Transcoder
 
 			if (paths != null && Directory.Exists(paths[0])) {
 				outputTextbox.Text = paths[0];
+			}
+		}
+
+		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+			var file = TranscoderFiles[e.RowIndex];
+
+			if (!String.IsNullOrEmpty(file.Log)) {
+				MessageBox.Show(file.Log, String.Format("Log: {0}", file.FilePath));
 			}
 		}
 
@@ -124,10 +125,10 @@ namespace Transcoder
 			setRunning(true);			
 
 			await Task.Run(() => {
-				using (var p = new Process() { EnableRaisingEvents = true }) {
-					for (int i = 0; i < TranscoderFiles.Count; i++) {
-						var file = TranscoderFiles[i];
+				for (int i = 0; i < TranscoderFiles.Count; i++) {
+					var file = TranscoderFiles[i];
 
+					using (var p = new Process()) {
 						p.StartInfo = new ProcessStartInfo() {
 							FileName = Path.Combine(Environment.CurrentDirectory, @"Tools\qaac\qaac.exe"),
 							Arguments = String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
@@ -137,18 +138,23 @@ namespace Transcoder
 							RedirectStandardOutput = true,
 							RedirectStandardError = true
 						};
-						DataReceivedEventHandler dataHandler = delegate(object processSender, DataReceivedEventArgs processEventArgs) {
-							file.Log += processEventArgs.Data;
-							updateStatus(String.Format("{0}: {1}", file.FileName, processEventArgs.Data));
+						p.EnableRaisingEvents = true;
+						p.OutputDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
+							file.Log += String.Format("{0}", processEventArgs.Data);
+							updateStatus(processEventArgs.Data);
 						};
-						p.OutputDataReceived += dataHandler;
-						p.ErrorDataReceived += dataHandler;
+						p.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
+							if (processEventArgs.Data != null && !processEventArgs.Data.StartsWith("[")) {
+								file.Log += String.Format("{0}", processEventArgs.Data);
+							}
+							updateStatus(processEventArgs.Data);
+						};
 						p.Exited += delegate(object processSender, EventArgs processEventArgs) {
 							file.Done = true;
 							resetTranscoderFile(i);
-							//var stdout = p.StandardOutput.ReadToEnd();
-							//var stderr = p.StandardError.ReadToEnd();
 						};
+
+						selectDataGridViewRow(i);
 
 						p.Start();
 						p.BeginOutputReadLine();
@@ -166,12 +172,11 @@ namespace Transcoder
 							updateStatus("Stopped");
 							return;
 						}
-
-						p.Refresh();
-						p.CancelOutputRead();
-						p.CancelErrorRead();
 					}
 				}
+
+				updateStatus("Ready");
+
 			}, TokenSource.Token);
 
 			setRunning(false);
@@ -186,6 +191,16 @@ namespace Transcoder
 
 			Running = running;
 			goButton.Text = running ? "&Stop" : "&Go";
+		}
+
+		private delegate void SelectDataGridViewRowCallback(int index);
+		private void selectDataGridViewRow(int index) {
+			if (InvokeRequired) {
+				Invoke(new SelectDataGridViewRowCallback(selectDataGridViewRow), index);
+				return;
+			}
+
+			filesDataGridView.CurrentCell = filesDataGridView.Rows[index].Cells[0];
 		}
 
 		private delegate void ResetTranscoderFileCallback(int index);
