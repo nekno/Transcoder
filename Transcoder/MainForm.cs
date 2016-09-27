@@ -28,10 +28,22 @@ namespace Transcoder
 			Load += MainForm_Load;
 			DragEnter += MainForm_DragEnter;
 			DragDrop += MainForm_DragDrop;
+
+			filesDataGridView.DragEnter += filesDataGridView_DragEnter;
+			filesDataGridView.DragDrop += filesDataGridView_DragDrop;
+			filesDataGridView.CellDoubleClick += filesDataGridView_CellDoubleClick;
+		}
+
+		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+			var file = TranscoderFiles[e.RowIndex];
+
+			if (!String.IsNullOrEmpty(file.Log)) {
+				MessageBox.Show(file.Log, String.Format("Log: {0}", file.FilePath));
+			}
 		}
 
 		void MainForm_Load(object sender, EventArgs e) {
-			dataGridView1.DataSource = TranscoderFiles;
+			filesDataGridView.DataSource = TranscoderFiles;
 		}
 
 		void MainForm_DragEnter(object sender, DragEventArgs e) {
@@ -55,6 +67,18 @@ namespace Transcoder
 
 				AddFiles(tfiles);
 			});
+		}
+
+		void filesDataGridView_DragEnter(object sender, DragEventArgs e) {
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+		
+		void filesDataGridView_DragDrop(object sender, DragEventArgs e) {
+			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
+
+			if (paths != null && Directory.Exists(paths[0])) {
+				outputTextbox.Text = paths[0];
+			}
 		}
 
 		delegate void AddFilesCallback(IEnumerable<TranscoderFile> files);
@@ -113,14 +137,22 @@ namespace Transcoder
 							RedirectStandardOutput = true,
 							RedirectStandardError = true
 						};
+						DataReceivedEventHandler dataHandler = delegate(object processSender, DataReceivedEventArgs processEventArgs) {
+							file.Log += processEventArgs.Data;
+							updateStatus(String.Format("{0}: {1}", file.FileName, processEventArgs.Data));
+						};
+						p.OutputDataReceived += dataHandler;
+						p.ErrorDataReceived += dataHandler;
 						p.Exited += delegate(object processSender, EventArgs processEventArgs) {
 							file.Done = true;
 							resetTranscoderFile(i);
-							var stdout = p.StandardOutput.ReadToEnd();
-							var stderr = p.StandardError.ReadToEnd();
+							//var stdout = p.StandardOutput.ReadToEnd();
+							//var stderr = p.StandardError.ReadToEnd();
 						};
 
 						p.Start();
+						p.BeginOutputReadLine();
+						p.BeginErrorReadLine();
 
 						while (!TokenSource.IsCancellationRequested && !p.HasExited) {
 							p.WaitForExit(500);
@@ -131,20 +163,18 @@ namespace Transcoder
 						}
 
 						if (TokenSource.IsCancellationRequested) {
+							updateStatus("Stopped");
 							return;
 						}
 
 						p.Refresh();
+						p.CancelOutputRead();
+						p.CancelErrorRead();
 					}
 				}
 			}, TokenSource.Token);
 
 			setRunning(false);
-		}
-
-		void TranscoderProcess_Exited(object sender, EventArgs e)
-		{
-			throw new NotImplementedException();
 		}
 
 		private delegate void RunningCallback(bool running);
@@ -166,6 +196,16 @@ namespace Transcoder
 			}
 
 			TranscoderFiles.ResetItem(index);
+		}
+
+		private delegate void UpdateStatusCallback(String status);
+		private void updateStatus(String status) {
+			if (InvokeRequired) {
+				Invoke(new UpdateStatusCallback(updateStatus), status);
+				return;
+			}
+
+			statusLabel.Text = status;
 		}
 	}
 }

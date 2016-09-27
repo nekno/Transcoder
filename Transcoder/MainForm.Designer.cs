@@ -32,25 +32,28 @@
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.filesDataGridView = new System.Windows.Forms.DataGridView();
+			this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.goButton = new System.Windows.Forms.Button();
 			this.outputTextbox = new System.Windows.Forms.TextBox();
 			this.outputBrowseButton = new System.Windows.Forms.Button();
 			this.outputLabel = new System.Windows.Forms.Label();
-			this.transcoderFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
+			this.statusStrip = new System.Windows.Forms.StatusStrip();
+			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.doneDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-			this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+			this.transcoderFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
+			((System.ComponentModel.ISupportInitialize)(this.filesDataGridView)).BeginInit();
+			this.statusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).BeginInit();
 			this.SuspendLayout();
 			// 
-			// dataGridView1
+			// filesDataGridView
 			// 
-			this.dataGridView1.AllowUserToAddRows = false;
-			this.dataGridView1.AllowUserToOrderColumns = true;
-			this.dataGridView1.AutoGenerateColumns = false;
+			this.filesDataGridView.AllowUserToAddRows = false;
+			this.filesDataGridView.AllowUserToOrderColumns = true;
+			this.filesDataGridView.AutoGenerateColumns = false;
 			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
 			dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -58,14 +61,14 @@
 			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+			this.filesDataGridView.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+			this.filesDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.filesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.doneDataGridViewCheckBoxColumn,
             this.fileDataGridViewTextBoxColumn,
             this.dataGridViewTextBoxColumn4,
             this.dataGridViewTextBoxColumn3});
-			this.dataGridView1.DataSource = this.transcoderFileBindingSource;
+			this.filesDataGridView.DataSource = this.transcoderFileBindingSource;
 			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
 			dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -73,10 +76,10 @@
 			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-			this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle2;
-			this.dataGridView1.Location = new System.Drawing.Point(12, 12);
-			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.ReadOnly = true;
+			this.filesDataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+			this.filesDataGridView.Location = new System.Drawing.Point(12, 12);
+			this.filesDataGridView.Name = "filesDataGridView";
+			this.filesDataGridView.ReadOnly = true;
 			dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
 			dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -84,9 +87,18 @@
 			dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.dataGridView1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-			this.dataGridView1.Size = new System.Drawing.Size(818, 474);
-			this.dataGridView1.TabIndex = 0;
+			this.filesDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+			this.filesDataGridView.Size = new System.Drawing.Size(818, 474);
+			this.filesDataGridView.TabIndex = 0;
+			// 
+			// fileDataGridViewTextBoxColumn
+			// 
+			this.fileDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			this.fileDataGridViewTextBoxColumn.DataPropertyName = "FileName";
+			this.fileDataGridViewTextBoxColumn.HeaderText = "File";
+			this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
+			this.fileDataGridViewTextBoxColumn.ReadOnly = true;
+			this.fileDataGridViewTextBoxColumn.Width = 48;
 			// 
 			// goButton
 			// 
@@ -124,9 +136,23 @@
 			this.outputLabel.TabIndex = 4;
 			this.outputLabel.Text = "Output:";
 			// 
-			// transcoderFileBindingSource
+			// statusStrip
 			// 
-			this.transcoderFileBindingSource.DataSource = typeof(Transcoder.TranscoderFile);
+			this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel});
+			this.statusStrip.Location = new System.Drawing.Point(0, 520);
+			this.statusStrip.Name = "statusStrip";
+			this.statusStrip.Size = new System.Drawing.Size(842, 22);
+			this.statusStrip.TabIndex = 5;
+			this.statusStrip.Text = "statusStrip1";
+			// 
+			// statusLabel
+			// 
+			this.statusLabel.Name = "statusLabel";
+			this.statusLabel.Size = new System.Drawing.Size(827, 17);
+			this.statusLabel.Spring = true;
+			this.statusLabel.Text = "Ready";
+			this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// doneDataGridViewCheckBoxColumn
 			// 
@@ -138,15 +164,6 @@
 			this.doneDataGridViewCheckBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
 			this.doneDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
 			this.doneDataGridViewCheckBoxColumn.Width = 58;
-			// 
-			// fileDataGridViewTextBoxColumn
-			// 
-			this.fileDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.fileDataGridViewTextBoxColumn.DataPropertyName = "FileName";
-			this.fileDataGridViewTextBoxColumn.HeaderText = "File";
-			this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
-			this.fileDataGridViewTextBoxColumn.ReadOnly = true;
-			this.fileDataGridViewTextBoxColumn.Width = 48;
 			// 
 			// dataGridViewTextBoxColumn4
 			// 
@@ -166,20 +183,27 @@
 			this.dataGridViewTextBoxColumn3.ReadOnly = true;
 			this.dataGridViewTextBoxColumn3.Width = 70;
 			// 
+			// transcoderFileBindingSource
+			// 
+			this.transcoderFileBindingSource.DataSource = typeof(Transcoder.TranscoderFile);
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(842, 527);
+			this.ClientSize = new System.Drawing.Size(842, 542);
+			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.outputLabel);
 			this.Controls.Add(this.outputBrowseButton);
 			this.Controls.Add(this.outputTextbox);
 			this.Controls.Add(this.goButton);
-			this.Controls.Add(this.dataGridView1);
+			this.Controls.Add(this.filesDataGridView);
 			this.Name = "MainForm";
 			this.Text = "Transcoder";
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.filesDataGridView)).EndInit();
+			this.statusStrip.ResumeLayout(false);
+			this.statusStrip.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
@@ -188,7 +212,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.DataGridView dataGridView1;
+		private System.Windows.Forms.DataGridView filesDataGridView;
 		private System.Windows.Forms.Button goButton;
 		private System.Windows.Forms.TextBox outputTextbox;
 		private System.Windows.Forms.Button outputBrowseButton;
@@ -198,6 +222,8 @@
 		private System.Windows.Forms.DataGridViewTextBoxColumn fileDataGridViewTextBoxColumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
 		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+		private System.Windows.Forms.StatusStrip statusStrip;
+		private System.Windows.Forms.ToolStripStatusLabel statusLabel;
 	}
 }
 
