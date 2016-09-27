@@ -100,40 +100,43 @@ namespace Transcoder
 			setRunning(true);			
 
 			await Task.Run(() => {
-				for (int i = 0; i < TranscoderFiles.Count; i++ ) {
-					var file = TranscoderFiles[i];
-					var p = new Process() {
-						StartInfo = new ProcessStartInfo() {
+				using (var p = new Process() { EnableRaisingEvents = true }) {
+					for (int i = 0; i < TranscoderFiles.Count; i++) {
+						var file = TranscoderFiles[i];
+
+						p.StartInfo = new ProcessStartInfo() {
 							FileName = Path.Combine(Environment.CurrentDirectory, @"Tools\qaac\qaac.exe"),
 							Arguments = String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
-							UseShellExecute = false
+							UseShellExecute = false,
+							RedirectStandardOutput = true,
+							RedirectStandardError = true
+						};
+						p.Exited += delegate(object processSender, EventArgs processEventArgs) {
+							file.Done = true;
+							resetTranscoderFile(i);
+							var stdout = p.StandardOutput.ReadToEnd();
+							var stderr = p.StandardError.ReadToEnd();
+						};
+
+						p.Start();
+
+						while (!TokenSource.IsCancellationRequested && !p.HasExited) {
+							p.WaitForExit(500);
 						}
-					};
 
-					p.EnableRaisingEvents = true;
-					p.Exited += delegate(object processSender, EventArgs processEventArgs) {
-						file.Done = true;
-						resetTranscoderFile(i);
-					};
+						if (!p.HasExited) {
+							p.Kill();
+						}
 
-					p.Start();
-					p.WaitForExit();
+						if (TokenSource.IsCancellationRequested) {
+							return;
+						}
+
+						p.Refresh();
+					}
 				}
-					/*proc = new Process();
-            ProcessStartInfo pstart = new ProcessStartInfo();
-            pstart.FileName = executable;
-            pstart.Arguments = Commandline;
-            log.LogValue("Job commandline", '"' + pstart.FileName + "\" " + pstart.Arguments);
-            pstart.RedirectStandardOutput = true;
-            pstart.RedirectStandardError = true;
-            pstart.WindowStyle = ProcessWindowStyle.Minimized;
-            pstart.CreateNoWindow = true;
-            pstart.UseShellExecute = false;
-            proc.StartInfo = pstart;
-            proc.EnableRaisingEvents = true;
-            proc.Exited += new EventHandler(proc_Exited);*/
 			}, TokenSource.Token);
 
 			setRunning(false);
