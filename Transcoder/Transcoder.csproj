@@ -83,28 +83,31 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Tools\qaac\libFLAC_dynamic.dll">
+    <Content Include="tools\ffmpeg\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\libsndfile-1.dll">
+    <Content Include="tools\qaac\libFLAC_dynamic.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\libsoxconvolver64.dll">
+    <Content Include="tools\qaac\libsndfile-1.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\libsoxr64.dll">
+    <Content Include="tools\qaac\libsoxconvolver64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\msvcp120.dll">
+    <Content Include="tools\qaac\libsoxr64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\msvcr120.dll">
+    <Content Include="tools\qaac\msvcp120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\qaac.exe">
+    <Content Include="tools\qaac\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tools\qaac\refalac.exe">
+    <Content Include="tools\qaac\qaac.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\qaac\refalac.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
