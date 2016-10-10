@@ -125,48 +125,81 @@ namespace Transcoder
 				
 			setRunning(true);			
 
-			await Task.Run(() => {
+			await Task.Run(async () => {
 				for (int i = 0; i < TranscoderFiles.Count; i++) {
 					var file = TranscoderFiles[i];
 
-					using (var p = new Process()) {
-						p.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, @"Tools\qaac\qaac.exe"),
-							Arguments = String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
+					using (var decoder = new Process())
+					using (var encoder = new Process()) {
+						decoder.StartInfo = new ProcessStartInfo() {
+							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\ffmpeg\ffmpeg.exe"),
+							Arguments = String.Format("-i \"{0}\" -vn -f wav -", file.FilePath),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
 							UseShellExecute = false,
+							RedirectStandardInput = true,
 							RedirectStandardOutput = true,
 							RedirectStandardError = true
 						};
-						p.EnableRaisingEvents = true;
-						p.OutputDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
+						decoder.EnableRaisingEvents = true;
+						decoder.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
+							if (processEventArgs.Data != null) {
+								file.Log += String.Format("{0}", processEventArgs.Data);
+							}
+						};
+
+						encoder.StartInfo = new ProcessStartInfo() {
+							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\qaac\qaac.exe"),
+							//Arguments = String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
+							//Arguments = String.Format("- --threading -v192 -d \"{0}\"", Path.Combine(outputTextbox.Text, file.Folder)),
+							Arguments = String.Format("- --threading -v192 -o \"{0}\"", Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a"))),
+							WindowStyle = ProcessWindowStyle.Hidden,
+							CreateNoWindow = true,
+							UseShellExecute = false,
+							RedirectStandardInput = true,
+							RedirectStandardOutput = true,
+							RedirectStandardError = true
+						};
+						encoder.EnableRaisingEvents = true;
+						encoder.OutputDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
 							file.Log += String.Format("{0}", processEventArgs.Data);
 							updateStatus(processEventArgs.Data);
 						};
-						p.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
+						encoder.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
 							if (processEventArgs.Data != null && !processEventArgs.Data.StartsWith("[")) {
 								file.Log += String.Format("{0}", processEventArgs.Data);
 							}
 							updateStatus(processEventArgs.Data);
 						};
-						p.Exited += delegate(object processSender, EventArgs processEventArgs) {
+						encoder.Exited += delegate(object processSender, EventArgs processEventArgs) {
 							file.Done = true;
 							resetTranscoderFile(i);
 						};
 
 						selectDataGridViewRow(i);
 
-						p.Start();
-						p.BeginOutputReadLine();
-						p.BeginErrorReadLine();
+						encoder.Start();
+						decoder.Start();
 
-						while (!TokenSource.IsCancellationRequested && !p.HasExited) {
-							p.WaitForExit(500);
+						encoder.BeginOutputReadLine();
+						encoder.BeginErrorReadLine();
+
+						decoder.BeginErrorReadLine();
+
+						await decoder.StandardOutput.BaseStream.CopyToAsync(encoder.StandardInput.BaseStream, 4096, TokenSource.Token);
+						await encoder.StandardInput.BaseStream.FlushAsync(TokenSource.Token);
+						encoder.StandardInput.Close();
+
+						while (!TokenSource.IsCancellationRequested && !encoder.HasExited) {
+							encoder.WaitForExit(500);
 						}
 
-						if (!p.HasExited) {
-							p.Kill();
+						if (!decoder.HasExited) {
+							decoder.Kill();
+						}
+
+						if (!encoder.HasExited) {
+							encoder.Kill();
 						}
 
 						if (TokenSource.IsCancellationRequested) {
