@@ -12,6 +12,7 @@ namespace Transcoder
 		public String FilePath { get; protected set; }
 		public String Folder { get; protected set; }
 		public String Log { get; set; }
+		public bool RequiresDecoding { get; set; }
 		public bool Done { get; set; }
 
 		public String FileName {

@@ -115,6 +115,11 @@ namespace Transcoder
 				return;
 			}
 
+			if (String.IsNullOrWhiteSpace(outputTextbox.Text)) {
+				MessageBox.Show("You must set the Output folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
 			for (int i = 0; i < TranscoderFiles.Count; i++) {
 				var file = TranscoderFiles[i];
 				if (file.Done) {
@@ -126,7 +131,8 @@ namespace Transcoder
 			setRunning(true);			
 
 			await Task.Run(async () => {
-				for (int i = 0; i < TranscoderFiles.Count; i++) {
+				int i = 0;
+				while (i < TranscoderFiles.Count) {
 					var file = TranscoderFiles[i];
 
 					using (var decoder = new Process())
@@ -150,9 +156,9 @@ namespace Transcoder
 
 						encoder.StartInfo = new ProcessStartInfo() {
 							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\qaac\qaac.exe"),
-							//Arguments = String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
-							//Arguments = String.Format("- --threading -v192 -d \"{0}\"", Path.Combine(outputTextbox.Text, file.Folder)),
-							Arguments = String.Format("- --threading -v192 -o \"{0}\"", Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a"))),
+							Arguments = file.RequiresDecoding 
+								? String.Format("- --threading -v192 -o \"{0}\"", Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a")))
+								: String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
 							UseShellExecute = false,
@@ -179,27 +185,37 @@ namespace Transcoder
 						selectDataGridViewRow(i);
 
 						encoder.Start();
-						decoder.Start();
-
 						encoder.BeginOutputReadLine();
 						encoder.BeginErrorReadLine();
 
-						decoder.BeginErrorReadLine();
+						if (file.RequiresDecoding) {
+							decoder.Start();
+							decoder.BeginErrorReadLine();
 
-						await decoder.StandardOutput.BaseStream.CopyToAsync(encoder.StandardInput.BaseStream, 4096, TokenSource.Token);
-						await encoder.StandardInput.BaseStream.FlushAsync(TokenSource.Token);
-						encoder.StandardInput.Close();
+							try {
+								await decoder.StandardOutput.BaseStream.CopyToAsync(encoder.StandardInput.BaseStream, 4096, TokenSource.Token);
+								await encoder.StandardInput.BaseStream.FlushAsync(TokenSource.Token);
+							} catch (TaskCanceledException) { }
+
+							encoder.StandardInput.Close();
+						}
 
 						while (!TokenSource.IsCancellationRequested && !encoder.HasExited) {
 							encoder.WaitForExit(500);
 						}
 
-						if (!decoder.HasExited) {
+						if (file.RequiresDecoding && !decoder.HasExited) {
 							decoder.Kill();
 						}
 
 						if (!encoder.HasExited) {
 							encoder.Kill();
+						}
+
+						if (encoder.ExitCode == 0 || file.RequiresDecoding) {
+							i++; // goto next file
+						} else {
+							file.RequiresDecoding = true; // try again with decoding
 						}
 
 						if (TokenSource.IsCancellationRequested) {
