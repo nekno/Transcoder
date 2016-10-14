@@ -33,20 +33,23 @@
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.filesDataGridView = new System.Windows.Forms.DataGridView();
-			this.doneDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-			this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.transcoderFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			this.goButton = new System.Windows.Forms.Button();
 			this.outputTextbox = new System.Windows.Forms.TextBox();
 			this.outputBrowseButton = new System.Windows.Forms.Button();
 			this.outputLabel = new System.Windows.Forms.Label();
 			this.statusStrip = new System.Windows.Forms.StatusStrip();
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.bitrateLabel = new System.Windows.Forms.Label();
+			this.bitrateNumericUpDown = new System.Windows.Forms.NumericUpDown();
+			this.doneDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+			this.folderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.transcoderFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.filesDataGridView)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).BeginInit();
 			this.statusStrip.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.bitrateNumericUpDown)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// filesDataGridView
@@ -66,8 +69,8 @@
 			this.filesDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.doneDataGridViewCheckBoxColumn,
             this.fileDataGridViewTextBoxColumn,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn3});
+            this.folderDataGridViewTextBoxColumn,
+            this.filePathDataGridViewTextBoxColumn});
 			this.filesDataGridView.DataSource = this.transcoderFileBindingSource;
 			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
@@ -88,54 +91,12 @@
 			dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
 			dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
 			this.filesDataGridView.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
-			this.filesDataGridView.Size = new System.Drawing.Size(818, 474);
+			this.filesDataGridView.Size = new System.Drawing.Size(910, 474);
 			this.filesDataGridView.TabIndex = 0;
-			// 
-			// doneDataGridViewCheckBoxColumn
-			// 
-			this.doneDataGridViewCheckBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-			this.doneDataGridViewCheckBoxColumn.DataPropertyName = "Done";
-			this.doneDataGridViewCheckBoxColumn.HeaderText = "Done";
-			this.doneDataGridViewCheckBoxColumn.Name = "doneDataGridViewCheckBoxColumn";
-			this.doneDataGridViewCheckBoxColumn.ReadOnly = true;
-			this.doneDataGridViewCheckBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-			this.doneDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-			this.doneDataGridViewCheckBoxColumn.Width = 58;
-			// 
-			// fileDataGridViewTextBoxColumn
-			// 
-			this.fileDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.fileDataGridViewTextBoxColumn.DataPropertyName = "FileName";
-			this.fileDataGridViewTextBoxColumn.HeaderText = "File";
-			this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
-			this.fileDataGridViewTextBoxColumn.ReadOnly = true;
-			this.fileDataGridViewTextBoxColumn.Width = 48;
-			// 
-			// dataGridViewTextBoxColumn4
-			// 
-			this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.dataGridViewTextBoxColumn4.DataPropertyName = "Folder";
-			this.dataGridViewTextBoxColumn4.HeaderText = "Folder";
-			this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-			this.dataGridViewTextBoxColumn4.ReadOnly = true;
-			this.dataGridViewTextBoxColumn4.Width = 61;
-			// 
-			// dataGridViewTextBoxColumn3
-			// 
-			this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.dataGridViewTextBoxColumn3.DataPropertyName = "FilePath";
-			this.dataGridViewTextBoxColumn3.HeaderText = "FilePath";
-			this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-			this.dataGridViewTextBoxColumn3.ReadOnly = true;
-			this.dataGridViewTextBoxColumn3.Width = 70;
-			// 
-			// transcoderFileBindingSource
-			// 
-			this.transcoderFileBindingSource.DataSource = typeof(Transcoder.TranscoderFile);
 			// 
 			// goButton
 			// 
-			this.goButton.Location = new System.Drawing.Point(755, 492);
+			this.goButton.Location = new System.Drawing.Point(847, 492);
 			this.goButton.Name = "goButton";
 			this.goButton.Size = new System.Drawing.Size(75, 23);
 			this.goButton.TabIndex = 1;
@@ -176,24 +137,104 @@
             this.statusLabel});
 			this.statusStrip.Location = new System.Drawing.Point(0, 520);
 			this.statusStrip.Name = "statusStrip";
-			this.statusStrip.Size = new System.Drawing.Size(842, 22);
+			this.statusStrip.Size = new System.Drawing.Size(934, 22);
 			this.statusStrip.TabIndex = 5;
 			this.statusStrip.Text = "statusStrip1";
 			// 
 			// statusLabel
 			// 
 			this.statusLabel.Name = "statusLabel";
-			this.statusLabel.Size = new System.Drawing.Size(827, 17);
+			this.statusLabel.Size = new System.Drawing.Size(919, 17);
 			this.statusLabel.Spring = true;
 			this.statusLabel.Text = "Ready";
 			this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// fileDataGridViewTextBoxColumn
+			// 
+			this.fileDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			this.fileDataGridViewTextBoxColumn.DataPropertyName = "FileName";
+			this.fileDataGridViewTextBoxColumn.HeaderText = "File";
+			this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
+			this.fileDataGridViewTextBoxColumn.ReadOnly = true;
+			this.fileDataGridViewTextBoxColumn.Width = 48;
+			// 
+			// bitrateLabel
+			// 
+			this.bitrateLabel.AutoSize = true;
+			this.bitrateLabel.Location = new System.Drawing.Point(750, 497);
+			this.bitrateLabel.Name = "bitrateLabel";
+			this.bitrateLabel.Size = new System.Drawing.Size(40, 13);
+			this.bitrateLabel.TabIndex = 7;
+			this.bitrateLabel.Text = "Bitrate:";
+			// 
+			// bitrateNumericUpDown
+			// 
+			this.bitrateNumericUpDown.Increment = new decimal(new int[] {
+            32,
+            0,
+            0,
+            0});
+			this.bitrateNumericUpDown.Location = new System.Drawing.Point(796, 495);
+			this.bitrateNumericUpDown.Maximum = new decimal(new int[] {
+            320,
+            0,
+            0,
+            0});
+			this.bitrateNumericUpDown.Minimum = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+			this.bitrateNumericUpDown.Name = "bitrateNumericUpDown";
+			this.bitrateNumericUpDown.Size = new System.Drawing.Size(45, 20);
+			this.bitrateNumericUpDown.TabIndex = 8;
+			this.bitrateNumericUpDown.Value = new decimal(new int[] {
+            192,
+            0,
+            0,
+            0});
+			// 
+			// doneDataGridViewCheckBoxColumn
+			// 
+			this.doneDataGridViewCheckBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			this.doneDataGridViewCheckBoxColumn.DataPropertyName = "Done";
+			this.doneDataGridViewCheckBoxColumn.HeaderText = "Done";
+			this.doneDataGridViewCheckBoxColumn.Name = "doneDataGridViewCheckBoxColumn";
+			this.doneDataGridViewCheckBoxColumn.ReadOnly = true;
+			this.doneDataGridViewCheckBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+			this.doneDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+			this.doneDataGridViewCheckBoxColumn.Width = 58;
+			// 
+			// folderDataGridViewTextBoxColumn
+			// 
+			this.folderDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			this.folderDataGridViewTextBoxColumn.DataPropertyName = "Folder";
+			this.folderDataGridViewTextBoxColumn.HeaderText = "Folder";
+			this.folderDataGridViewTextBoxColumn.Name = "folderDataGridViewTextBoxColumn";
+			this.folderDataGridViewTextBoxColumn.ReadOnly = true;
+			this.folderDataGridViewTextBoxColumn.Width = 61;
+			// 
+			// filePathDataGridViewTextBoxColumn
+			// 
+			this.filePathDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
+			this.filePathDataGridViewTextBoxColumn.HeaderText = "FilePath";
+			this.filePathDataGridViewTextBoxColumn.Name = "filePathDataGridViewTextBoxColumn";
+			this.filePathDataGridViewTextBoxColumn.ReadOnly = true;
+			this.filePathDataGridViewTextBoxColumn.Width = 70;
+			// 
+			// transcoderFileBindingSource
+			// 
+			this.transcoderFileBindingSource.DataSource = typeof(Transcoder.TranscoderFile);
 			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(842, 542);
+			this.ClientSize = new System.Drawing.Size(934, 542);
+			this.Controls.Add(this.bitrateNumericUpDown);
+			this.Controls.Add(this.bitrateLabel);
 			this.Controls.Add(this.statusStrip);
 			this.Controls.Add(this.outputLabel);
 			this.Controls.Add(this.outputBrowseButton);
@@ -203,9 +244,10 @@
 			this.Name = "MainForm";
 			this.Text = "Transcoder";
 			((System.ComponentModel.ISupportInitialize)(this.filesDataGridView)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.bitrateNumericUpDown)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -219,12 +261,14 @@
 		private System.Windows.Forms.Button outputBrowseButton;
 		private System.Windows.Forms.Label outputLabel;
 		private System.Windows.Forms.BindingSource transcoderFileBindingSource;
-		private System.Windows.Forms.DataGridViewCheckBoxColumn doneDataGridViewCheckBoxColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn fileDataGridViewTextBoxColumn;
-		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-		private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
 		private System.Windows.Forms.StatusStrip statusStrip;
 		private System.Windows.Forms.ToolStripStatusLabel statusLabel;
+		private System.Windows.Forms.DataGridViewCheckBoxColumn doneDataGridViewCheckBoxColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn fileDataGridViewTextBoxColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn folderDataGridViewTextBoxColumn;
+		private System.Windows.Forms.DataGridViewTextBoxColumn filePathDataGridViewTextBoxColumn;
+		private System.Windows.Forms.Label bitrateLabel;
+		private System.Windows.Forms.NumericUpDown bitrateNumericUpDown;
 	}
 }
 

@@ -120,6 +120,11 @@ namespace Transcoder
 				return;
 			}
 
+			if (bitrateNumericUpDown.Value < 64 || bitrateNumericUpDown.Value > 320) {
+				MessageBox.Show("You must set a bitrate from 64-320.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
 			for (int i = 0; i < TranscoderFiles.Count; i++) {
 				var file = TranscoderFiles[i];
 				if (file.Done) {
@@ -134,6 +139,7 @@ namespace Transcoder
 				int i = 0;
 				while (i < TranscoderFiles.Count) {
 					var file = TranscoderFiles[i];
+					var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
 
 					using (var decoder = new Process())
 					using (var encoder = new Process()) {
@@ -157,8 +163,8 @@ namespace Transcoder
 						encoder.StartInfo = new ProcessStartInfo() {
 							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\qaac\qaac.exe"),
 							Arguments = file.RequiresDecoding 
-								? String.Format("- --threading -v192 -o \"{0}\"", Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a")))
-								: String.Format("\"{0}\" --threading -v192 -d \"{1}\"", file.FilePath, Path.Combine(outputTextbox.Text, file.Folder)),
+								? String.Format("- --threading -v{0} -o \"{1}\"", bitrate, Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a")))
+								: String.Format("\"{0}\" --threading -v{1} -d \"{2}\"", file.FilePath, bitrate, Path.Combine(outputTextbox.Text, file.Folder)),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
 							UseShellExecute = false,
