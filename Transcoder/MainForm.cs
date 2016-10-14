@@ -48,12 +48,12 @@ namespace Transcoder
 			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
 
 			await Task.Run(() => {
-				var tfiles = new List<TranscoderFile>(paths.Length * 10); // underestimate 10 songs per album
+				var tfiles = new List<TranscoderFile>(paths.Length * 10); // estimate 10 songs per album
 
 				foreach (var path in paths) {
 					if (Directory.Exists(path)) {
 						var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
-						tfiles.AddRange(files.Select(file => new TranscoderFile(file, path)));
+						tfiles.AddRange(files.Where(file => TranscoderFile.IsTranscodableFile(file)).Select(file => new TranscoderFile(file, path)));
 					} else if (File.Exists(path)) {
 						tfiles.Add(new TranscoderFile(path));
 					}
