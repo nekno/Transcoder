@@ -185,7 +185,7 @@ namespace Transcoder
 						};
 						encoder.Exited += delegate(object processSender, EventArgs processEventArgs) {
 							file.Done = true;
-							resetTranscoderFile(i);
+							resetTranscoderFile(file);
 						};
 
 						selectDataGridViewRow(i);
@@ -259,13 +259,14 @@ namespace Transcoder
 			filesDataGridView.CurrentCell = filesDataGridView.Rows[index].Cells[0];
 		}
 
-		private delegate void ResetTranscoderFileCallback(int index);
-		private void resetTranscoderFile(int index) {
+		private delegate void ResetTranscoderFileCallback(TranscoderFile file);
+		private void resetTranscoderFile(TranscoderFile file) {
 			if (InvokeRequired) {
-				Invoke(new ResetTranscoderFileCallback(resetTranscoderFile), index);
+				Invoke(new ResetTranscoderFileCallback(resetTranscoderFile), file);
 				return;
 			}
 
+			var index = TranscoderFiles.IndexOf(file);
 			TranscoderFiles.ResetItem(index);
 		}
 
