@@ -69,7 +69,7 @@ namespace MediaInfoLib
         Finalized   =       0x08,
     }
 
-    public class MediaInfo
+    public class MediaInfo: IDisposable
     {
         //Import of DLL functions. DO NOT USE until you know what you do (MediaInfo DLL do NOT use CoTaskMemAlloc to allocate memory)
         [DllImport("MediaInfo.dll")]
@@ -226,7 +226,11 @@ namespace MediaInfoLib
         public String Get(StreamKind StreamKind, int StreamNumber, int Parameter) { return Get(StreamKind, StreamNumber, Parameter, InfoKind.Text); }
         public String Option(String Option_) { return Option(Option_, ""); }
         public int Count_Get(StreamKind StreamKind) { return Count_Get(StreamKind, -1); }
-    }
+
+		public void Dispose() {
+			Close();
+		}
+	}
 
 
 

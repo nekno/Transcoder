@@ -42,20 +42,12 @@ namespace Transcoder
 			//	return String.IsNullOrEmpty(result);
 			//}
 
-			MediaInfo mediaInfo = null;
-
-			try {
-				mediaInfo = new MediaInfo();
-
+			using (var mediaInfo = new MediaInfo()) { 
 				mediaInfo.Open(filePath);
 				var audioStreams = mediaInfo.Count_Get(StreamKind.Audio);
 
 				return audioStreams > 0;
-			} finally {
-				if (mediaInfo != null) {
-					mediaInfo.Close();
-				}
-			}
+			} 
 		}
 
 		public TranscoderFile(String filePath, String folderPath = null) {
