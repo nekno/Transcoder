@@ -122,10 +122,10 @@
     <Content Include="tools\qaac\libsoxr64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\qaac\qaac.exe">
+    <Content Include="tools\qaac\qaac64.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\qaac\refalac.exe">
+    <Content Include="tools\qaac\refalac64.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

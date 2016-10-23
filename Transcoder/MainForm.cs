@@ -161,7 +161,7 @@ namespace Transcoder
 						};
 
 						encoder.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\qaac\qaac.exe"),
+							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\qaac\qaac64.exe"),
 							Arguments = file.RequiresDecoding 
 								? String.Format("- --threading -v{0} -o \"{1}\"", bitrate, Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a")))
 								: String.Format("\"{0}\" --threading -v{1} -d \"{2}\"", file.FilePath, bitrate, Path.Combine(outputTextbox.Text, file.Folder)),
