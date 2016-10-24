@@ -1,4 +1,5 @@
-# Transcoder
+# Transcoder [![GitHub license](https://img.shields.io/github/license/nekno/transcoder.svg)](https://raw.githubusercontent.com/nekno/Transcoder/master/LICENSE) [![GitHub release](https://img.shields.io/github/release/nekno/transcoder.svg)](https://github.com/nekno/Transcoder/releases)
+
 A simple media transcoder for converting audio/video files. For now, it is an AAC audio transcoder that converts various formats to AAC/M4A using the Apple QuickTime encoder.
 
 It works on Windows 64-bit versions and is written in C# for the .Net 4.5 runtime.
