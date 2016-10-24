@@ -3,6 +3,8 @@ A simple media transcoder for converting audio/video files. For now, it is an AA
 
 It works on Windows 64-bit versions and is written in C# for the .Net 4.5 runtime.
 
+Download the latest release: https://github.com/nekno/Transcoder/releases
+
 ## Why?
 
 >With all the options for media encoders/transcoders, why would anyone embark on starting a new one?
