@@ -26,12 +26,12 @@ namespace Transcoder
 			TokenSource = new CancellationTokenSource();
 
 			Load += MainForm_Load;
-			DragEnter += MainForm_DragEnter;
-			DragDrop += MainForm_DragDrop;
-
 			filesDataGridView.CellDoubleClick += filesDataGridView_CellDoubleClick;
 
-			outputTextbox.DragEnter += outputTextbox_DragEnter;
+			DragEnter += Control_DragEnter;
+			DragDrop += MainForm_DragDrop;
+
+			outputTextbox.DragEnter += Control_DragEnter;
 			outputTextbox.DragDrop += outputTextbox_DragDrop;
 		}
 
@@ -40,7 +40,7 @@ namespace Transcoder
 			filesDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 		}
 
-		void MainForm_DragEnter(object sender, DragEventArgs e) {
+		void Control_DragEnter(object sender, DragEventArgs e) {
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
@@ -69,10 +69,6 @@ namespace Transcoder
 			if (!String.IsNullOrEmpty(file.Log)) {
 				MessageBox.Show(file.Log, String.Format("Log: {0}", file.FilePath));
 			}
-		}
-
-		void outputTextbox_DragEnter(object sender, DragEventArgs e) {
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
 		void outputTextbox_DragDrop(object sender, DragEventArgs e) {
