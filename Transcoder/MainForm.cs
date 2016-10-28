@@ -38,6 +38,11 @@ namespace Transcoder
 		void MainForm_Load(object sender, EventArgs e) {
 			filesDataGridView.DataSource = TranscoderFiles;
 			filesDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
+			encoderComboBox.DisplayMember = "Name";
+			encoderComboBox.ValueMember = "FileExtension";
+			encoderComboBox.Items.AddRange(TranscoderFile.Types);
+			encoderComboBox.SelectedItem = TranscoderFile.Type.QTAAC;
 		}
 
 		void Control_DragEnter(object sender, DragEventArgs e) {
@@ -99,6 +104,11 @@ namespace Transcoder
 			}
 		}
 
+		void encoderComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+			var selectedType = encoderComboBox.SelectedItem as TranscoderFile.Type;
+			bitrateNumericUpDown.Enabled = selectedType.IsBitrateRequired;
+		}
+
 		async void goButton_Click(object sender, EventArgs e) {
 			if (Running) {
 				if (TokenSource.IsCancellationRequested) return;
@@ -129,18 +139,20 @@ namespace Transcoder
 				}
 			}
 				
-			setRunning(true);			
+			setRunning(true);
+
+			var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
+			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 
 			await Task.Run(async () => {
 				int i = 0;
 				while (i < TranscoderFiles.Count) {
 					var file = TranscoderFiles[i];
-					var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
-
+					
 					using (var decoder = new Process())
 					using (var encoder = new Process()) {
 						decoder.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\ffmpeg\ffmpeg.exe"),
+							FileName = Path.Combine(Environment.CurrentDirectory, Transcoder.Encoder.FFMPEG.FilePath),
 							Arguments = String.Format("-i \"{0}\" -vn -f wav -", file.FilePath),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
@@ -157,10 +169,8 @@ namespace Transcoder
 						};
 
 						encoder.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, @"tools\qaac\qaac64.exe"),
-							Arguments = file.RequiresDecoding
-								? String.Format("- --threading --gapless-mode 2 -v{0} -o \"{1}\"", bitrate, Path.Combine(Path.Combine(outputTextbox.Text, file.Folder), Path.ChangeExtension(file.FileName, "m4a")))
-								: String.Format("\"{0}\" --threading --gapless-mode 2 -v{1} -d \"{2}\"", file.FilePath, bitrate, Path.Combine(outputTextbox.Text, file.Folder)),
+							FileName = Path.Combine(Environment.CurrentDirectory, encoderType.Encoder.FilePath),
+							Arguments = file.buildCommandLineArgs(encoderType, bitrate, outputTextbox.Text),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
 							UseShellExecute = false,
