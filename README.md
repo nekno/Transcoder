@@ -19,7 +19,7 @@ Though I expect no one will read this, if you want something added or are having
 ## What are your basic requirements? 
 
 - Takes input/output files/folders by drag-n-drop.
-- When you drag in a folder, it remebers the folder name and automatically puts the output files in a subfolder of the same name.
+- When you drag in a folder, it remembers the folder name and automatically puts the output files in a subfolder of the same name, rebuilding the folder hierarchy down from there.
 - It uses the QuickTime AAC encoder, because it is essentially the best quality available.
 - It avoids writing files to disk whenever possible, and does as much as possible of the decoding/encoding in memory.
 - It supports decoding RAW PCM, WAV, ALAC, FLAC, MP3, AAC-LC, and other LPCM formats supported by the [qaac](https://github.com/nu774/qaac/wiki/About-input-format) project (via the Apple AudioFile service).
@@ -29,15 +29,15 @@ Though I expect no one will read this, if you want something added or are having
 
 ### UI
 - Drag-n-drop input folders anywhere on the app, and it will remember the folder you dropped in. All files in all subfolders will be added to the list. The same folder structure you dropped in will be maintained in the output. It will follow any number of levels of hierarchy.
- - So if you drop in `C:\FLAC` and it contains the following subfolders:
-    - `C:\FLAC\Album1\CD1`
-    - `C:\FLAC\Album1\CD2`
-    - `C:\FLAC\Album2`
+ - So if you drop in `C:\FLAC\Artist` and it contains the following subfolders:
+    - `C:\FLAC\Artist\Album1\CD1`
+    - `C:\FLAC\Artist\Album1\CD2`
+    - `C:\FLAC\Artist\Album2`
  - And then set the `Output` folder to `C:\MP4`, the app will create the following output folders:
-    - `C:\MP4\Album1\CD1`
-    - `C:\MP4\Album2\CD2`
-    - `C:\MP4\Album2`
-- Drag-n-drop individual
+    - `C:\MP4\Artist\Album1\CD1`
+    - `C:\MP4\Artist\Album2\CD2`
+    - `C:\MP4\Artist\Album2`
+- Drag-n-drop files instead of folders to place them in the output folder without putting them in a subfolder.
 - Drag-n-drop the output folder on the `Output` textbox, or use the `Browse...` button to select the output.
 - It defaults to a bitrate of 192kbps CVBR (Constrained Variable Bit Rate). You can change the bitrate to any value from 64-320kbps. The QuickTime CVBR mode is the same used by Apple for iTunes Plus on the iTunes Music Store, except Apple uses 256kbps. Higher bitrates are usually better, but if you're archiving an original copy of an audio file, and just transcoding this copy of the file for everyday listening purposes, then you should achieve a transparent encoding indistinguishable from the original by human ears at ~192kbps. 
 - You can select one or more rows to delete the files from the list by clicking and dragging (or Ctrl+Clicking, Shift+Clicking) and hitting the Delete key.
