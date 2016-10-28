@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Encoder.cs" />
     <Compile Include="MediaInfoDLL.cs" />
     <Compile Include="TranscoderFile.cs" />
     <Compile Include="MainForm.cs">
