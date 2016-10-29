@@ -170,7 +170,7 @@ namespace Transcoder
 
 						encoder.StartInfo = new ProcessStartInfo() {
 							FileName = Path.Combine(Environment.CurrentDirectory, encoderType.Encoder.FilePath),
-							Arguments = file.buildCommandLineArgs(encoderType, bitrate, outputTextbox.Text),
+							Arguments = file.BuildCommandLineArgs(encoderType, bitrate, outputTextbox.Text),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
 							UseShellExecute = false,
@@ -195,6 +195,25 @@ namespace Transcoder
 						};
 
 						selectDataGridViewRow(i);
+
+						var destinationFolder = file.OutputFolderPath(outputTextbox.Text);
+
+						if (!Directory.Exists(destinationFolder)) {
+							try {
+								Directory.CreateDirectory(destinationFolder);
+							} catch (Exception ex) {
+								file.Log += ex.Message;
+								updateStatus(ex.Message);
+
+								if (TokenSource.IsCancellationRequested) {
+									updateStatus("Stopped");
+									return;
+								}
+
+								i++;
+								continue;
+							}
+						}
 
 						encoder.Start();
 						encoder.BeginOutputReadLine();

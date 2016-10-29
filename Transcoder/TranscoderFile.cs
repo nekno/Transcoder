@@ -73,14 +73,18 @@ namespace Transcoder
 			Folder = destRelativeFolderPath;
 		}
 
-		public String buildCommandLineArgs(Type encoderType, Int32 bitrate, String outputFolder) {
+		public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String outputFolder) {
 			return String.Format(
 				encoderType.CommandLineArgs(RequiresDecoding), 
 				FilePath, 
-				bitrate, 
-				Path.Combine(outputFolder, Folder),
+				bitrate,
+				OutputFolderPath(outputFolder),
 				Path.Combine(Path.Combine(outputFolder, Folder), Path.ChangeExtension(FileName, encoderType.FileExtension))
 			);
+		}
+
+		public String OutputFolderPath(string baseOutputFolder) {
+			return Path.Combine(baseOutputFolder, Folder);
 		}
 
 		public class Type
