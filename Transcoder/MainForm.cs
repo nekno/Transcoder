@@ -143,6 +143,7 @@ namespace Transcoder
 
 			var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
 			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
+			TokenSource = new CancellationTokenSource();
 
 			await Task.Run(async () => {
 				int i = 0;
