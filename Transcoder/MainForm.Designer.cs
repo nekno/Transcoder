@@ -33,7 +33,11 @@
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.filesDataGridView = new System.Windows.Forms.DataGridView();
+			this.doneDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
 			this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.folderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.transcoderFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			this.goButton = new System.Windows.Forms.Button();
 			this.outputTextbox = new System.Windows.Forms.TextBox();
 			this.outputBrowseButton = new System.Windows.Forms.Button();
@@ -43,20 +47,19 @@
 			this.bitrateLabel = new System.Windows.Forms.Label();
 			this.bitrateNumericUpDown = new System.Windows.Forms.NumericUpDown();
 			this.encoderComboBox = new System.Windows.Forms.ComboBox();
-			this.doneDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-			this.folderDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.transcoderFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.filesDataGridView)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).BeginInit();
 			this.statusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.bitrateNumericUpDown)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// filesDataGridView
 			// 
 			this.filesDataGridView.AllowUserToAddRows = false;
 			this.filesDataGridView.AllowUserToOrderColumns = true;
+			this.filesDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.filesDataGridView.AutoGenerateColumns = false;
 			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
 			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -95,17 +98,51 @@
 			this.filesDataGridView.Size = new System.Drawing.Size(910, 474);
 			this.filesDataGridView.TabIndex = 0;
 			// 
+			// doneDataGridViewCheckBoxColumn
+			// 
+			this.doneDataGridViewCheckBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
+			this.doneDataGridViewCheckBoxColumn.DataPropertyName = "Done";
+			this.doneDataGridViewCheckBoxColumn.HeaderText = "Done";
+			this.doneDataGridViewCheckBoxColumn.Name = "doneDataGridViewCheckBoxColumn";
+			this.doneDataGridViewCheckBoxColumn.ReadOnly = true;
+			this.doneDataGridViewCheckBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+			this.doneDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+			this.doneDataGridViewCheckBoxColumn.Width = 58;
+			// 
 			// fileDataGridViewTextBoxColumn
 			// 
 			this.fileDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
 			this.fileDataGridViewTextBoxColumn.DataPropertyName = "FileName";
-			this.fileDataGridViewTextBoxColumn.HeaderText = "File";
+			this.fileDataGridViewTextBoxColumn.HeaderText = "File Name";
 			this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
 			this.fileDataGridViewTextBoxColumn.ReadOnly = true;
 			this.fileDataGridViewTextBoxColumn.Width = 48;
 			// 
+			// folderDataGridViewTextBoxColumn
+			// 
+			this.folderDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			this.folderDataGridViewTextBoxColumn.DataPropertyName = "Folder";
+			this.folderDataGridViewTextBoxColumn.HeaderText = "Folder";
+			this.folderDataGridViewTextBoxColumn.Name = "folderDataGridViewTextBoxColumn";
+			this.folderDataGridViewTextBoxColumn.ReadOnly = true;
+			this.folderDataGridViewTextBoxColumn.Width = 61;
+			// 
+			// filePathDataGridViewTextBoxColumn
+			// 
+			this.filePathDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+			this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
+			this.filePathDataGridViewTextBoxColumn.HeaderText = "File Path";
+			this.filePathDataGridViewTextBoxColumn.Name = "filePathDataGridViewTextBoxColumn";
+			this.filePathDataGridViewTextBoxColumn.ReadOnly = true;
+			this.filePathDataGridViewTextBoxColumn.Width = 70;
+			// 
+			// transcoderFileBindingSource
+			// 
+			this.transcoderFileBindingSource.DataSource = typeof(Transcoder.TranscoderFile);
+			// 
 			// goButton
 			// 
+			this.goButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.goButton.Location = new System.Drawing.Point(847, 492);
 			this.goButton.Name = "goButton";
 			this.goButton.Size = new System.Drawing.Size(75, 23);
@@ -117,6 +154,8 @@
 			// outputTextbox
 			// 
 			this.outputTextbox.AllowDrop = true;
+			this.outputTextbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.outputTextbox.Location = new System.Drawing.Point(57, 494);
 			this.outputTextbox.Name = "outputTextbox";
 			this.outputTextbox.Size = new System.Drawing.Size(440, 20);
@@ -124,6 +163,7 @@
 			// 
 			// outputBrowseButton
 			// 
+			this.outputBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.outputBrowseButton.Location = new System.Drawing.Point(503, 492);
 			this.outputBrowseButton.Name = "outputBrowseButton";
 			this.outputBrowseButton.Size = new System.Drawing.Size(75, 23);
@@ -134,6 +174,7 @@
 			// 
 			// outputLabel
 			// 
+			this.outputLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.outputLabel.AutoSize = true;
 			this.outputLabel.Location = new System.Drawing.Point(9, 497);
 			this.outputLabel.Name = "outputLabel";
@@ -161,6 +202,7 @@
 			// 
 			// bitrateLabel
 			// 
+			this.bitrateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.bitrateLabel.AutoSize = true;
 			this.bitrateLabel.Location = new System.Drawing.Point(750, 497);
 			this.bitrateLabel.Name = "bitrateLabel";
@@ -170,6 +212,7 @@
 			// 
 			// bitrateNumericUpDown
 			// 
+			this.bitrateNumericUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.bitrateNumericUpDown.Increment = new decimal(new int[] {
             32,
             0,
@@ -197,45 +240,14 @@
 			// 
 			// encoderComboBox
 			// 
+			this.encoderComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.encoderComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.encoderComboBox.FormattingEnabled = true;
 			this.encoderComboBox.Location = new System.Drawing.Point(584, 494);
 			this.encoderComboBox.Name = "encoderComboBox";
 			this.encoderComboBox.Size = new System.Drawing.Size(160, 21);
 			this.encoderComboBox.TabIndex = 9;
 			this.encoderComboBox.SelectedIndexChanged += new System.EventHandler(this.encoderComboBox_SelectedIndexChanged);
-			// 
-			// doneDataGridViewCheckBoxColumn
-			// 
-			this.doneDataGridViewCheckBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.ColumnHeader;
-			this.doneDataGridViewCheckBoxColumn.DataPropertyName = "Done";
-			this.doneDataGridViewCheckBoxColumn.HeaderText = "Done";
-			this.doneDataGridViewCheckBoxColumn.Name = "doneDataGridViewCheckBoxColumn";
-			this.doneDataGridViewCheckBoxColumn.ReadOnly = true;
-			this.doneDataGridViewCheckBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-			this.doneDataGridViewCheckBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-			this.doneDataGridViewCheckBoxColumn.Width = 58;
-			// 
-			// folderDataGridViewTextBoxColumn
-			// 
-			this.folderDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.folderDataGridViewTextBoxColumn.DataPropertyName = "Folder";
-			this.folderDataGridViewTextBoxColumn.HeaderText = "Folder";
-			this.folderDataGridViewTextBoxColumn.Name = "folderDataGridViewTextBoxColumn";
-			this.folderDataGridViewTextBoxColumn.ReadOnly = true;
-			this.folderDataGridViewTextBoxColumn.Width = 61;
-			// 
-			// filePathDataGridViewTextBoxColumn
-			// 
-			this.filePathDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-			this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
-			this.filePathDataGridViewTextBoxColumn.HeaderText = "FilePath";
-			this.filePathDataGridViewTextBoxColumn.Name = "filePathDataGridViewTextBoxColumn";
-			this.filePathDataGridViewTextBoxColumn.ReadOnly = true;
-			this.filePathDataGridViewTextBoxColumn.Width = 70;
-			// 
-			// transcoderFileBindingSource
-			// 
-			this.transcoderFileBindingSource.DataSource = typeof(Transcoder.TranscoderFile);
 			// 
 			// MainForm
 			// 
@@ -255,10 +267,10 @@
 			this.Name = "MainForm";
 			this.Text = "Transcoder";
 			((System.ComponentModel.ISupportInitialize)(this.filesDataGridView)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).EndInit();
 			this.statusStrip.ResumeLayout(false);
 			this.statusStrip.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.bitrateNumericUpDown)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.transcoderFileBindingSource)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
