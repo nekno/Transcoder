@@ -143,7 +143,7 @@
 			// goButton
 			// 
 			this.goButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.goButton.Location = new System.Drawing.Point(847, 492);
+			this.goButton.Location = new System.Drawing.Point(847, 493);
 			this.goButton.Name = "goButton";
 			this.goButton.Size = new System.Drawing.Size(75, 23);
 			this.goButton.TabIndex = 1;
@@ -164,7 +164,7 @@
 			// outputBrowseButton
 			// 
 			this.outputBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.outputBrowseButton.Location = new System.Drawing.Point(503, 492);
+			this.outputBrowseButton.Location = new System.Drawing.Point(503, 493);
 			this.outputBrowseButton.Name = "outputBrowseButton";
 			this.outputBrowseButton.Size = new System.Drawing.Size(75, 23);
 			this.outputBrowseButton.TabIndex = 3;
