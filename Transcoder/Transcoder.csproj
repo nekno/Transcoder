@@ -132,118 +132,127 @@
     <Content Include="tools\ffmpeg\ffmpeg.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\bzip2.txt">
+    <Content Include="tools\ffmpeg\licenses\bzip2.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\dcadec.txt">
+    <Content Include="tools\ffmpeg\licenses\fontconfig.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\fontconfig.txt">
+    <Content Include="tools\ffmpeg\licenses\freetype.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\freetype.txt">
+    <Content Include="tools\ffmpeg\licenses\frei0r.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\frei0r.txt">
+    <Content Include="tools\ffmpeg\licenses\gme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\gme.txt">
+    <Content Include="tools\ffmpeg\licenses\gnutls.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\gnutls.txt">
+    <Content Include="tools\ffmpeg\licenses\lame.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\lame.txt">
+    <Content Include="tools\ffmpeg\licenses\libass.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libass.txt">
+    <Content Include="tools\ffmpeg\licenses\libbluray.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libbluray.txt">
+    <Content Include="tools\ffmpeg\licenses\libbs2b.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libbs2b.txt">
+    <Content Include="tools\ffmpeg\licenses\libcaca.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libcaca.txt">
+    <Content Include="tools\ffmpeg\licenses\libebur128.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libgsm.txt">
+    <Content Include="tools\ffmpeg\licenses\libgsm.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libiconv.txt">
+    <Content Include="tools\ffmpeg\licenses\libiconv.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libilbc.txt">
+    <Content Include="tools\ffmpeg\licenses\libilbc.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libmodplug.txt">
+    <Content Include="tools\ffmpeg\licenses\libmfx.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libtheora.txt">
+    <Content Include="tools\ffmpeg\licenses\libmodplug.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libvorbis.txt">
+    <Content Include="tools\ffmpeg\licenses\libtheora.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libvpx.txt">
+    <Content Include="tools\ffmpeg\licenses\libvorbis.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\libwebp.txt">
+    <Content Include="tools\ffmpeg\licenses\libvpx.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\opencore-amr.txt">
+    <Content Include="tools\ffmpeg\licenses\libwebp.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\openjpeg.txt">
+    <Content Include="tools\ffmpeg\licenses\opencore-amr.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\opus.txt">
+    <Content Include="tools\ffmpeg\licenses\openh264.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\rtmpdump.txt">
+    <Content Include="tools\ffmpeg\licenses\openjpeg.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\schroedinger.txt">
+    <Content Include="tools\ffmpeg\licenses\opus.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\soxr.txt">
+    <Content Include="tools\ffmpeg\licenses\rtmpdump.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\speex.txt">
+    <Content Include="tools\ffmpeg\licenses\schroedinger.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\twolame.txt">
+    <Content Include="tools\ffmpeg\licenses\snappy.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\vid.stab.txt">
+    <Content Include="tools\ffmpeg\licenses\soxr.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\vo-aacenc.txt">
+    <Content Include="tools\ffmpeg\licenses\speex.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\vo-amrwbenc.txt">
+    <Content Include="tools\ffmpeg\licenses\twolame.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\wavpack.txt">
+    <Content Include="tools\ffmpeg\licenses\vid.stab.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\x264.txt">
+    <Content Include="tools\ffmpeg\licenses\vo-amrwbenc.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\x265.txt">
+    <Content Include="tools\ffmpeg\licenses\wavpack.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\xavs.txt">
+    <Content Include="tools\ffmpeg\licenses\x264.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\xvid.txt">
+    <Content Include="tools\ffmpeg\licenses\x265.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\xz.txt">
+    <Content Include="tools\ffmpeg\licenses\xavs.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\ffmpeg\licenses-ffmpeg-20150921-git-74e4948-win64-static\zlib.txt">
+    <Content Include="tools\ffmpeg\licenses\xvid.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\ffmpeg\licenses\xz.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\ffmpeg\licenses\zimg.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="tools\ffmpeg\licenses\zlib.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="tools\ffmpeg\README.txt">
