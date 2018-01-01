@@ -59,7 +59,7 @@ namespace Transcoder
 					if (Directory.Exists(path)) {
 						var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
 						tfiles.AddRange(files.Where(file => TranscoderFile.IsTranscodableFile(file)).Select(file => new TranscoderFile(file, path)));
-					} else if (File.Exists(path)) {
+					} else if (File.Exists(path) && TranscoderFile.IsTranscodableFile(path)) {
 						tfiles.Add(new TranscoderFile(path));
 					}
 				};
