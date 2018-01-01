@@ -57,20 +57,20 @@ namespace Transcoder
 			} 
 		}
 
-		public TranscoderFile(String filePath, String folderPath = null) {
+		public TranscoderFile(String filePath, String rootFolderPath = null) {
 			FilePath = filePath;
 
-			if (filePath == null || folderPath == null) {
+			if (filePath == null || rootFolderPath == null) {
 				Folder = String.Empty;
 				return;
 			}
 
 			var srcFolderPath = filePath.Replace(Path.GetFileName(filePath), String.Empty);
-			var srcFolderName = srcFolderPath.Replace(folderPath, String.Empty).TrimEnd(new char[] { Path.DirectorySeparatorChar });
-			var destFolderName = Path.GetFileName(folderPath);
-			var destRelativeFolderPath = destFolderName + srcFolderName;
+			var srcSubfolderRelativePath = srcFolderPath.Replace(rootFolderPath, String.Empty).TrimEnd(new char[] { Path.DirectorySeparatorChar });
+			var destFolderName = Path.GetFileName(rootFolderPath);
+			var destSubfolderRelativePath = destFolderName + srcSubfolderRelativePath;
 
-			Folder = destRelativeFolderPath;
+			Folder = destSubfolderRelativePath;
 		}
 
 		public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String outputFolder) {
