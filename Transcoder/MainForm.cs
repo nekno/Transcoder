@@ -53,7 +53,7 @@ namespace Transcoder
 			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
 
 			await Task.Run(() => {
-				var tfiles = new List<TranscoderFile>(paths.Length * 10); // estimate 10 songs per album
+				var tfiles = new List<TranscoderFile>(paths.Length * 30); // over-estimate 30 songs per album
 
 				foreach (var path in paths) {
 					if (Directory.Exists(path)) {
