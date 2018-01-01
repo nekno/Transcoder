@@ -73,14 +73,15 @@ namespace Transcoder
 			Folder = destSubfolderRelativePath;
 		}
 
-		public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String outputFolder) {
-			return String.Format(
+		public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder) {
+            var args =  String.Format(
 				encoderType.CommandLineArgs(RequiresDecoding), 
 				FilePath, 
 				bitrate,
-				OutputFolderPath(outputFolder),
-				Path.Combine(Path.Combine(outputFolder, Folder), Path.ChangeExtension(FileName, encoderType.FileExtension))
+                Path.Combine(OutputFolderPath(baseOutputFolder), Path.ChangeExtension(FileName, encoderType.FileExtension))
 			);
+
+            return args;
 		}
 
 		public String OutputFolderPath(string baseOutputFolder) {
@@ -94,23 +95,24 @@ namespace Transcoder
 				FileExtension = ".m4a", 
 				Encoder = Transcoder.Encoder.QAAC, 
 				IsBitrateRequired = true,
-				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 -v{1} -o \"{3}\"",
-				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 -v{1} -d \"{2}\""
-			};
+				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\"",
+				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\""
+            };
+
 			public static Type QTALAC = new Type() { 
 				Name = "QuickTime ALAC", 
 				Encoder = Encoder.QAAC, 
 				FileExtension = ".m4a",
-				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 -A -o \"{3}\"",
-				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 -A -d \"{2}\""
-			};
+				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\"",
+				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\""
+            };
 
 			public static Type FLAC = new Type() { 
 				Name = "FLAC", 
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".flac",
 				CommandLineArgsWithDecoding = String.Empty,
-				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{3}\""
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
 			};
 
 			public static Type WAV = new Type() { 
@@ -118,7 +120,7 @@ namespace Transcoder
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".wav",
 				CommandLineArgsWithDecoding = String.Empty,
-				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{3}\""
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
 			};
 
 			public String Name { get; protected set; }
