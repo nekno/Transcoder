@@ -91,9 +91,9 @@ namespace Transcoder
 		public class Type
 		{
 			public static Type QTAAC = new Type() { 
-				Name = "QuickTime AAC", 
-				FileExtension = ".m4a", 
-				Encoder = Transcoder.Encoder.QAAC, 
+				Name = "QuickTime AAC",
+                Encoder = Transcoder.Encoder.QAAC,
+                FileExtension = ".m4a", 
 				IsBitrateRequired = true,
 				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\"",
 				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\""
@@ -124,8 +124,8 @@ namespace Transcoder
 			};
 
 			public String Name { get; protected set; }
-			public String FileExtension { get; protected set; }
-			public Encoder Encoder { get; protected set; }
+            public Encoder Encoder { get; protected set; }
+            public String FileExtension { get; protected set; }
 			public Boolean IsBitrateRequired { get; protected set; }
 
 			protected String CommandLineArgsWithDecoding { get; set; }
