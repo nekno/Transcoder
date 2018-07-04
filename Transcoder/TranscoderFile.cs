@@ -78,7 +78,7 @@ namespace Transcoder
 				encoderType.CommandLineArgs(RequiresDecoding), 
 				FilePath, 
 				bitrate,
-                Path.Combine(OutputFolderPath(baseOutputFolder), Path.ChangeExtension(FileName, encoderType.FileExtension))
+                OutputFilePath(encoderType, baseOutputFolder)
 			);
 
             return args;
@@ -88,7 +88,12 @@ namespace Transcoder
 			return Path.Combine(baseOutputFolder, Folder);
 		}
 
-		public class Type
+        public String OutputFilePath(Type encoderType, String baseOutputFolder)
+        {
+            return Path.Combine(OutputFolderPath(baseOutputFolder), Path.ChangeExtension(FileName, encoderType.FileExtension));
+        }
+
+        public class Type
 		{
 			public static Type QTAAC = new Type() { 
 				Name = "QuickTime AAC",
