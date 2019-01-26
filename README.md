@@ -29,11 +29,11 @@ Though I expect no one will read this, if you want something added or are having
 
 ### UI
 - Drag-n-drop input folders anywhere on the app, and it will remember the folder you dropped in. All files in all subfolders will be added to the list. The same folder structure you dropped in will be maintained in the output. It will follow any number of levels of hierarchy.
- - So if you drop in `C:\FLAC\Artist` and it contains the following subfolders:
+  - So if you drop in `C:\FLAC\Artist` and it contains the following subfolders:
     - `C:\FLAC\Artist\Album1\CD1`
     - `C:\FLAC\Artist\Album1\CD2`
     - `C:\FLAC\Artist\Album2`
- - And then set the `Output` folder to `C:\MP4`, the app will create the following output folders:
+  - And then set the `Output` folder to `C:\MP4`, the app will create the following output folders:
     - `C:\MP4\Artist\Album1\CD1`
     - `C:\MP4\Artist\Album2\CD2`
     - `C:\MP4\Artist\Album2`
@@ -50,8 +50,8 @@ Though I expect no one will read this, if you want something added or are having
 - When dropping input files on the app, the MediaInfo library is used to check for audio files. If there are no audio streams detected, the file will not be added to the list. This takes some time, but proved faster than using `ffmpeg`/ffprobe` and will enable showing some basic file stats in the future.
 - If you dropped on a lot of folders/files, wait a bit. There's no progress UI, but the input files are being processed asynchronously.
 - The app first attempts to decode a file with qaac.
- - If decoding succeeds, the decoded audio is read in directly and encoded. A temproary output file is written to disk, then qaac rewrites the output file to optimize the layout of the MP4 container. Media tags are copied from the input file to the output file, but copying artwork is not supported.
- - If decoding fails, ffmpeg is used to decode the audio and is piped directly to qaac to encode the audio date without writing an intermediate file to disk. qaac then proceeds normally, where a temporary output file is written to disk, then the output file is rewritten to optimize the MP4 container format. Media tags are not copied from the input file.
+  - If decoding succeeds, the decoded audio is read in directly and encoded. A temproary output file is written to disk, then qaac rewrites the output file to optimize the layout of the MP4 container. Media tags are copied from the input file to the output file, but copying artwork is not supported.
+  - If decoding fails, ffmpeg is used to decode the audio and is piped directly to qaac to encode the audio date without writing an intermediate file to disk. qaac then proceeds normally, where a temporary output file is written to disk, then the output file is rewritten to optimize the MP4 container format. Media tags are not copied from the input file.
  
 ### Encoding
 - Multi-threaded encoding is enabled with qaac.
@@ -62,17 +62,17 @@ Though I expect no one will read this, if you want something added or are having
 The app works on 64-bit versions of Windows because it uses 64-bit executables/libraries from 3rd parties. I haven't taken the time to detect 32-bit platforms and swap in the appropriate executables/libraries, but if you know what you're doing, there's nothing special going on that would prevent you from copying in 32-bit versions of the depedencies.
 
 - [.Net 4.5 or greater](http://go.microsoft.com/fwlink/?LinkId=780597) (currently .Net 4.6.2 is the latest)
-- Apple Application Support / [iTunes](https://www.apple.com/itunes/download/)
+- Apple Application Support / [iTunes](https://www.apple.com/itunes/download/win64)
 
 ## Dependencies
 
 All dependencies are included with the app, except for the Apple Application Support module, which is available as a separate installer that can be extracted form the iTunes installer, or is installed automatically with iTunes. 
 
-The easiest way to get going is to just install the latest 64-bit version of [iTunes](https://www.apple.com/itunes/download/).
+The easiest way to get going is to just install the latest 64-bit version of [iTunes](https://www.apple.com/itunes/download/win64).
 
 - The [`qaac`](https://sites.google.com/site/qaacpage/) command-line wrapper is used for decoding and encoding with the Apple QuickTime AAC encoder. 
- - qaac [requires](https://github.com/nu774/qaac/wiki/Installation) that you have installed Apple Application Support, which is included in iTunes or QuickTime.
- - [libFLAC](http://www.rarewares.org/lossless.php) has been included for use with qaac in decoding FLAC files.
- - [libsndfile](http://www.mega-nerd.com/libsndfile) has been included for use with qaac in decoding other formats.
+  - qaac [requires](https://github.com/nu774/qaac/wiki/Installation) that you have installed Apple Application Support, which is included in iTunes or QuickTime.
+  - [libFLAC](http://www.rarewares.org/lossless.php) has been included for use with qaac in decoding FLAC files.
+  - [libsndfile](http://www.mega-nerd.com/libsndfile) has been included for use with qaac in decoding other formats.
 - [FFmpeg](http://ffmpeg.zeranoe.com/builds/) is used for fallback, decoding formats not supported by qaac.
 - [MediaInfo](https://mediaarea.net/en/MediaInfo) is used to speed up determining whether files dropped on the app are audio files. 
