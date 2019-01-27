@@ -12,15 +12,17 @@ namespace Transcoder
 	public class TranscoderFile
 	{
 		public static Type[] Types = new Type[] {
-			Type.FLAC,
 			Type.QTAAC,
 			Type.QTALAC,
-			Type.WAV
+            Type.FLAC,
+            Type.MP3CBR,
+            Type.MP3VBR,
+            Type.WAV
 		};
 		
 		public String FilePath { get; protected set; }
 		public String Folder { get; protected set; }
-		public String Log { get; set; }
+        public StringBuilder Log { get; set; } = new StringBuilder();
 		public bool RequiresDecoding { get; set; }
 		public bool Done { get; set; }
 
@@ -77,14 +79,15 @@ namespace Transcoder
             var args =  String.Format(
 				encoderType.CommandLineArgs(RequiresDecoding), 
 				FilePath, 
-				bitrate,
+				encoderType.BitrateArgs(bitrate),
                 OutputFilePath(encoderType, baseOutputFolder)
 			);
 
             return args;
 		}
 
-		public String OutputFolderPath(string baseOutputFolder) {
+		public String OutputFolderPath(string baseOutputFolder)
+        {
 			return Path.Combine(baseOutputFolder, Folder);
 		}
 
@@ -96,8 +99,8 @@ namespace Transcoder
         public class Type
 		{
 			public static Type QTAAC = new Type() { 
-				Name = "QuickTime AAC",
-                Encoder = Transcoder.Encoder.QAAC,
+				Name = "QuickTime AAC (CVBR)",
+                Encoder = Encoder.QAAC,
                 FileExtension = ".m4a", 
 				IsBitrateRequired = true,
 				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\"",
@@ -120,7 +123,37 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
 			};
 
-			public static Type WAV = new Type() { 
+            public static Type MP3CBR = new Type()
+            {
+                Name = "MP3 (CBR)",
+                Encoder = Encoder.FFMPEG,
+                FileExtension = ".mp3",
+                IsBitrateRequired = true,
+                CommandLineArgsWithDecoding = String.Empty,
+                CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a libmp3lame -b:a {1}k -y \"{2}\""
+            };
+
+            public static Type MP3VBR = new Type()
+            {
+                Name = "MP3 (VBR)",
+                Encoder = Encoder.FFMPEG,
+                FileExtension = ".mp3",
+                IsBitrateRequired = true,
+                CommandLineArgsWithDecoding = String.Empty,
+                CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a libmp3lame {1} -y \"{2}\"",
+                BitrateMap =
+                {
+                    { 64, "-q:a 9" },
+                    { 96, "-q:a 7" },
+                    { 128, "-q:a 5" },
+                    { 192, "-q:a 2" },
+                    { 224, "-q:a 1" },
+                    { 256, "-q:a 0" },
+                    { 320, "-b:a 320k" },
+                }
+            };
+
+            public static Type WAV = new Type() { 
 				Name = "WAV",
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".wav",
@@ -128,17 +161,31 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
 			};
 
-			public String Name { get; protected set; }
+            public String Name { get; protected set; }
             public Encoder Encoder { get; protected set; }
             public String FileExtension { get; protected set; }
 			public Boolean IsBitrateRequired { get; protected set; }
 
-			protected String CommandLineArgsWithDecoding { get; set; }
+            protected Dictionary<Int32, String> BitrateMap { get; set; } = new Dictionary<Int32, String>();
+            protected String CommandLineArgsWithDecoding { get; set; }
 			protected String CommandLineArgsWithoutDecoding { get; set; }
 
-			public String CommandLineArgs(bool isDecodingRequired) {
+            public String BitrateArgs(Int32 bitrate)
+            {
+                if (BitrateMap.ContainsKey(bitrate))
+                {
+                    return BitrateMap[bitrate];
+                }
+                else
+                {
+                    return bitrate.ToString();
+                }
+            }
+
+            public String CommandLineArgs(bool isDecodingRequired)
+            {
 				return isDecodingRequired ? CommandLineArgsWithDecoding : CommandLineArgsWithoutDecoding;
-			}
+            }
 		}
 	}
 }

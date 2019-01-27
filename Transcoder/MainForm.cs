@@ -71,8 +71,8 @@ namespace Transcoder
 		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
 			var file = TranscoderFiles[e.RowIndex];
 
-			if (!String.IsNullOrEmpty(file.Log)) {
-				MessageBox.Show(file.Log, String.Format("Log: {0}", file.FilePath));
+			if (file.Log.Length > 0) {
+				MessageBox.Show(file.Log.ToString(), String.Format("Log: {0}", file.FilePath));
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Transcoder
 					using (var decoder = new Process())
 					using (var encoder = new Process()) {
 						decoder.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, Transcoder.Encoder.FFMPEG.FilePath),
+							FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFMPEG.FilePath),
 							Arguments = String.Format("-i \"{0}\" -vn -f wav -", file.FilePath),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
@@ -165,7 +165,7 @@ namespace Transcoder
 						decoder.EnableRaisingEvents = true;
 						decoder.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
 							if (processEventArgs.Data != null) {
-								file.Log += String.Format("{0}", processEventArgs.Data);
+								file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
 							}
 						};
 
@@ -181,12 +181,12 @@ namespace Transcoder
 						};
 						encoder.EnableRaisingEvents = true;
 						encoder.OutputDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
-							file.Log += String.Format("{0}", processEventArgs.Data);
+							file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
 							updateStatus(processEventArgs.Data);
 						};
 						encoder.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
 							if (processEventArgs.Data != null && !processEventArgs.Data.StartsWith("[")) {
-								file.Log += String.Format("{0}", processEventArgs.Data);
+								file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
 							}
 							updateStatus(processEventArgs.Data);
 						};
@@ -203,7 +203,7 @@ namespace Transcoder
 							try {
 								Directory.CreateDirectory(destinationFolder);
 							} catch (Exception ex) {
-								file.Log += ex.Message;
+								file.Log.AppendLine(ex.Message);
 								updateStatus(ex.Message);
 
 								if (TokenSource.IsCancellationRequested) {
@@ -216,12 +216,14 @@ namespace Transcoder
 							}
 						}
 
-						encoder.Start();
+                        encoder.Start();
 						encoder.BeginOutputReadLine();
 						encoder.BeginErrorReadLine();
 
 						if (file.RequiresDecoding) {
-							decoder.Start();
+                            file.Log.AppendLine(String.Format("{0} {1}", decoder.StartInfo.FileName, decoder.StartInfo.Arguments));
+                            file.Log.AppendLine(String.Format("{0} {1}", encoder.StartInfo.FileName, encoder.StartInfo.Arguments));
+                            decoder.Start();
 							decoder.BeginErrorReadLine();
 
 							try {
@@ -230,9 +232,11 @@ namespace Transcoder
 							} catch (TaskCanceledException) { }
 
 							encoder.StandardInput.Close();
-						}
+						} else {
+                            file.Log.AppendLine(String.Format("{0} {1}", encoder.StartInfo.FileName, encoder.StartInfo.Arguments));
+                        }
 
-						while (!TokenSource.IsCancellationRequested && !encoder.HasExited) {
+                        while (!TokenSource.IsCancellationRequested && !encoder.HasExited) {
 							encoder.WaitForExit(500);
 						}
 
