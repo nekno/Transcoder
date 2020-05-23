@@ -6,6 +6,7 @@ namespace Transcoder
 	{
 		public static Encoder QAAC = new Encoder() { FilePath = @"tools\qaac\qaac64.exe" };
 		public static Encoder FFMPEG = new Encoder() { FilePath = @"tools\ffmpeg\ffmpeg.exe" };
+		public static Encoder FFPROBE = new Encoder() { FilePath = @"tools\ffmpeg\ffprobe.exe" };
 
 		public String FilePath { get; protected set; }
 	}

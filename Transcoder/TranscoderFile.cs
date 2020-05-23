@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MediaInfoLib;
 
@@ -26,6 +27,7 @@ namespace Transcoder
 
         #region Public Properties
 
+        public Int32? BitDepth { get; protected set; }
 		public bool Done { get; set; }
 		public String FileName
 		{
@@ -73,6 +75,7 @@ namespace Transcoder
         #region Constructors
 
         public TranscoderFile(String filePath, String rootFolderPath = null) {
+			BitDepth = bitDepth(filePath);
 			FilePath = filePath;
 
 			if (filePath == null || rootFolderPath == null) {
@@ -97,7 +100,8 @@ namespace Transcoder
 				encoderType.CommandLineArgs(RequiresDecoding), 
 				FilePath, 
 				encoderType.BitrateArgs(bitrate),
-                OutputFilePath(encoderType, baseOutputFolder)
+                OutputFilePath(encoderType, baseOutputFolder),
+				encoderType.BitDepthArgs(BitDepth)
 			);
 
             return args;
@@ -113,6 +117,43 @@ namespace Transcoder
 			return Path.Combine(baseOutputFolder, Folder);
 		}
 
+        #endregion
+
+        #region Protected Methods
+
+        protected Int32? bitDepth(String filePath)
+		{
+			using (var decoder = new Process())
+			{
+				Int32? bitDepth = null;
+
+				decoder.StartInfo = new ProcessStartInfo()
+				{
+					FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFPROBE.FilePath),
+					Arguments = String.Format("-select_streams a -show_entries stream=bits_per_raw_sample -of flat \"{0}\"", filePath),
+					WindowStyle = ProcessWindowStyle.Hidden,
+					CreateNoWindow = true,
+					UseShellExecute = false,
+					RedirectStandardInput = false,
+					RedirectStandardOutput = true,
+					RedirectStandardError = false
+				};
+
+				decoder.Start();
+				var output = decoder.StandardOutput.ReadToEnd();
+
+				var match = Regex.Match(output, "^streams.stream.0.bits_per_raw_sample=\"([\\d]+)\"");
+				if (match.Success && match.Groups.Count == 2)
+				{
+					if (Int32.TryParse(match.Groups[1].Value, out int bitValue))
+					{
+						bitDepth = bitValue;
+					}
+				}
+
+				return bitDepth;
+			}
+		}
 
         #endregion
 
@@ -182,7 +223,13 @@ namespace Transcoder
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".wav",
 				CommandLineArgsWithDecoding = String.Empty,
-				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y {3} \"{2}\"",
+				BitDepthMap =
+				{
+					{ 16, "-c:a pcm_s16le" },
+					{ 24, "-c:a pcm_s24le" },
+					{ 32, "-c:a pcm_s32le" }
+				}
 			};
 
             #endregion
@@ -194,6 +241,7 @@ namespace Transcoder
             public String FileExtension { get; protected set; }
 			public Boolean IsBitrateRequired { get; protected set; }
 
+			protected Dictionary<Int32, String> BitDepthMap { get; set; } = new Dictionary<Int32, String>();
             protected Dictionary<Int32, String> BitrateMap { get; set; } = new Dictionary<Int32, String>();
             protected String CommandLineArgsWithDecoding { get; set; }
 			protected String CommandLineArgsWithoutDecoding { get; set; }
@@ -201,6 +249,18 @@ namespace Transcoder
 			#endregion
 
 			#region Public Methods
+
+			public String BitDepthArgs(Int32? bitDepth)
+			{
+				if (bitDepth.HasValue && BitDepthMap.ContainsKey(bitDepth.Value))
+				{
+					return BitDepthMap[bitDepth.Value];
+				}
+				else
+				{
+					return String.Empty;
+				}
+			}
 
 			public String BitrateArgs(Int32 bitrate)
             {

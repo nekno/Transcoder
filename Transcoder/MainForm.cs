@@ -154,7 +154,7 @@ namespace Transcoder
 					using (var encoder = new Process()) {
 						decoder.StartInfo = new ProcessStartInfo() {
 							FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFMPEG.FilePath),
-							Arguments = String.Format("-i \"{0}\" -vn -f wav -", file.FilePath),
+							Arguments = String.Format("-i \"{0}\" -vn -f wav {1} -", file.FilePath, TranscoderFile.Type.WAV.BitDepthArgs(file.BitDepth)),
 							WindowStyle = ProcessWindowStyle.Hidden,
 							CreateNoWindow = true,
 							UseShellExecute = false,
