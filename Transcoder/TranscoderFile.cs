@@ -117,6 +117,12 @@ namespace Transcoder
 			return Path.Combine(baseOutputFolder, Folder);
 		}
 
+		public void ResetFile()
+		{
+			Done = false;
+			RequiresDecoding = false;
+		}
+
         #endregion
 
         #region Protected Methods

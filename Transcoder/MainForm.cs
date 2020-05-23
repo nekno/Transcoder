@@ -134,7 +134,7 @@ namespace Transcoder
 			for (int i = 0; i < TranscoderFiles.Count; i++) {
 				var file = TranscoderFiles[i];
 				if (file.Done) {
-					file.Done = false;
+					file.ResetFile();
 					TranscoderFiles.ResetItem(i);
 				}
 			}
