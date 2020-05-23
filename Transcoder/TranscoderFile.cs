@@ -55,7 +55,22 @@ namespace Transcoder
 				mediaInfo.Open(filePath);
 				var audioStreams = mediaInfo.Count_Get(StreamKind.Audio);
 
-				return audioStreams > 0;
+                //var allInfo = new StringBuilder();
+                //var paramCount = Convert.ToInt32(mediaInfo.Get(StreamKind.Audio, 0, 0, InfoKind.Text));
+
+                //for (int i = 0; i < paramCount; i++)
+                //{
+                //    var infoName = mediaInfo.Get(StreamKind.Audio, 0, i, InfoKind.Name);
+                //    var info = mediaInfo.Get(StreamKind.Audio, 0, i, InfoKind.Text);
+                //    allInfo.AppendFormat("{0}: {1} = {2}\n", i, infoName, info);
+                //}
+
+                //var completeInfo = allInfo.ToString();
+
+                //// 74: Duration/String3 HH:MM:SS.MMM
+                //var streamLength = mediaInfo.Get(StreamKind.Audio, 0, 74, InfoKind.Text);
+
+                return audioStreams > 0;
 			} 
 		}
 
