@@ -11,7 +11,9 @@ namespace Transcoder
 {
 	public class TranscoderFile
 	{
-		public static Type[] Types = new Type[] {
+        #region Static Fields
+
+        public static Type[] Types = new Type[] {
 			Type.QTAAC,
 			Type.QTALAC,
             Type.FLAC,
@@ -19,62 +21,58 @@ namespace Transcoder
             Type.MP3VBR,
             Type.WAV
 		};
-		
+
+        #endregion
+
+        #region Public Properties
+
+		public bool Done { get; set; }
+		public String FileName
+		{
+			get
+			{
+				return Path.GetFileName(FilePath);
+			}
+		}
 		public String FilePath { get; protected set; }
 		public String Folder { get; protected set; }
         public StringBuilder Log { get; set; } = new StringBuilder();
 		public bool RequiresDecoding { get; set; }
-		public bool Done { get; set; }
 
-		public String FileName {
-			get {
-				return Path.GetFileName(FilePath);
-			}
-		}
+        #endregion
 
-		public static bool IsTranscodableFile(String filePath) {
-			//using (var decoder = new Process()) {
-			//	decoder.StartInfo = new ProcessStartInfo() {
-			//		FileName = Path.Combine(Environment.CurrentDirectory, @"tools\ffmpeg\ffmpeg.exe"),
-			//		Arguments = String.Format("-i \"{0}\" -acodec copy -v error -f null -", filePath),
-			//		WindowStyle = ProcessWindowStyle.Hidden,
-			//		CreateNoWindow = true,
-			//		UseShellExecute = false,
-			//		RedirectStandardInput = false,
-			//		RedirectStandardOutput = false,
-			//		RedirectStandardError = true
-			//	};
+        #region Static Methods
 
-			//	decoder.Start();
-			//	var result = decoder.StandardError.ReadToEnd();
-
-			//	return String.IsNullOrEmpty(result);
-			//}
-
+        public static bool IsTranscodableFile(String filePath) {
 			using (var mediaInfo = new MediaInfo()) { 
 				mediaInfo.Open(filePath);
 				var audioStreams = mediaInfo.Count_Get(StreamKind.Audio);
 
-                //var allInfo = new StringBuilder();
-                //var paramCount = Convert.ToInt32(mediaInfo.Get(StreamKind.Audio, 0, 0, InfoKind.Text));
+				//var allInfo = new StringBuilder();
+				//// Parameter 0 contains the count of parameters for this stream
+				//var paramCount = Convert.ToInt32(mediaInfo.Get(StreamKind.Audio, 0, 0, InfoKind.Text));
 
-                //for (int i = 0; i < paramCount; i++)
-                //{
-                //    var infoName = mediaInfo.Get(StreamKind.Audio, 0, i, InfoKind.Name);
-                //    var info = mediaInfo.Get(StreamKind.Audio, 0, i, InfoKind.Text);
-                //    allInfo.AppendFormat("{0}: {1} = {2}\n", i, infoName, info);
-                //}
+				//for (int i = 0; i < paramCount; i++)
+				//{
+				//	var infoName = mediaInfo.Get(StreamKind.Audio, 0, i, InfoKind.Name);
+				//	var info = mediaInfo.Get(StreamKind.Audio, 0, i, InfoKind.Text);
+				//	allInfo.AppendFormat("{0}: {1} = {2}\n", i, infoName, info);
+				//}
 
-                //var completeInfo = allInfo.ToString();
+				//var completeInfo = allInfo.ToString();
 
-                //// 74: Duration/String3 HH:MM:SS.MMM
-                //var streamLength = mediaInfo.Get(StreamKind.Audio, 0, 74, InfoKind.Text);
+				//// 74: Duration/String3 HH:MM:SS.MMM
+				//var streamLength = mediaInfo.Get(StreamKind.Audio, 0, 74, InfoKind.Text);
 
-                return audioStreams > 0;
+				return audioStreams > 0;
 			} 
 		}
 
-		public TranscoderFile(String filePath, String rootFolderPath = null) {
+        #endregion
+
+        #region Constructors
+
+        public TranscoderFile(String filePath, String rootFolderPath = null) {
 			FilePath = filePath;
 
 			if (filePath == null || rootFolderPath == null) {
@@ -90,7 +88,11 @@ namespace Transcoder
 			Folder = destSubfolderRelativePath;
 		}
 
-		public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder) {
+        #endregion
+
+        #region Public Methods
+
+        public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder) {
             var args =  String.Format(
 				encoderType.CommandLineArgs(RequiresDecoding), 
 				FilePath, 
@@ -101,19 +103,26 @@ namespace Transcoder
             return args;
 		}
 
+		public String OutputFilePath(Type encoderType, String baseOutputFolder)
+		{
+			return Path.Combine(OutputFolderPath(baseOutputFolder), Path.ChangeExtension(FileName, encoderType.FileExtension));
+		}
+
 		public String OutputFolderPath(string baseOutputFolder)
         {
 			return Path.Combine(baseOutputFolder, Folder);
 		}
 
-        public String OutputFilePath(Type encoderType, String baseOutputFolder)
-        {
-            return Path.Combine(OutputFolderPath(baseOutputFolder), Path.ChangeExtension(FileName, encoderType.FileExtension));
-        }
+
+        #endregion
+
+        #region Sub Types
 
         public class Type
 		{
-			public static Type QTAAC = new Type() { 
+            #region Static Fields
+
+            public static Type QTAAC = new Type() { 
 				Name = "QuickTime AAC (CVBR)",
                 Encoder = Encoder.QAAC,
                 FileExtension = ".m4a", 
@@ -176,6 +185,10 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
 			};
 
+            #endregion
+
+            #region Public Properties
+
             public String Name { get; protected set; }
             public Encoder Encoder { get; protected set; }
             public String FileExtension { get; protected set; }
@@ -185,7 +198,11 @@ namespace Transcoder
             protected String CommandLineArgsWithDecoding { get; set; }
 			protected String CommandLineArgsWithoutDecoding { get; set; }
 
-            public String BitrateArgs(Int32 bitrate)
+			#endregion
+
+			#region Public Methods
+
+			public String BitrateArgs(Int32 bitrate)
             {
                 if (BitrateMap.ContainsKey(bitrate))
                 {
@@ -201,6 +218,10 @@ namespace Transcoder
             {
 				return isDecodingRequired ? CommandLineArgsWithDecoding : CommandLineArgsWithoutDecoding;
             }
-		}
-	}
+
+            #endregion
+        }
+
+        #endregion
+    }
 }
