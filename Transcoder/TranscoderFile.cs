@@ -141,7 +141,7 @@ namespace Transcoder
 			public static Type CSV = new Type()
 			{
 				Name = "Sound Forge Regions CSV",
-				Encoder = Encoder.NULL,
+				Encoder = Encoder.CSV,
 				FileExtension = ".csv"
 			};
 

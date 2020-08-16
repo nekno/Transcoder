@@ -307,7 +307,7 @@ namespace Transcoder
 						}
 					}
 				} 
-				else
+				else if (encoderType.Encoder == Encoder.CSV)
                 {
 					for (int i = 0; i < TranscoderFiles.Count; i++)
 					{
