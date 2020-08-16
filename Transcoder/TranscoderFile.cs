@@ -22,7 +22,8 @@ namespace Transcoder
             Type.FLAC,
             Type.MP3CBR,
             Type.MP3VBR,
-            Type.WAV
+            Type.WAV,
+			Type.CSV,
 		};
 
         #endregion
@@ -137,6 +138,12 @@ namespace Transcoder
 		{
 			#region Static Fields
 
+			public static Type CSV = new Type()
+			{
+				Name = "Sound Forge Regions CSV",
+				Encoder = Encoder.NULL,
+				FileExtension = ".csv"
+			};
 
 			public static Type FFMPEG_ALAC = new Type()
 			{
