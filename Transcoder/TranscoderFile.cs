@@ -18,6 +18,7 @@ namespace Transcoder
         public static Type[] Types = new Type[] {
 			Type.QTAAC,
 			Type.QTALAC,
+			Type.FFMPEG_ALAC,
             Type.FLAC,
             Type.MP3CBR,
             Type.MP3VBR,
@@ -134,24 +135,17 @@ namespace Transcoder
 
         public class Type
 		{
-            #region Static Fields
+			#region Static Fields
 
-            public static Type QTAAC = new Type() { 
-				Name = "QuickTime AAC (CVBR)",
-                Encoder = Encoder.QAAC,
-                FileExtension = ".m4a", 
-				IsBitrateRequired = true,
-				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\"",
-				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\""
-            };
 
-			public static Type QTALAC = new Type() { 
-				Name = "QuickTime ALAC", 
-				Encoder = Encoder.QAAC, 
+			public static Type FFMPEG_ALAC = new Type()
+			{
+				Name = "FFMPEG ALAC",
+				Encoder = Encoder.FFMPEG,
 				FileExtension = ".m4a",
-				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\"",
-				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\""
-            };
+				CommandLineArgsWithDecoding = String.Empty,
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a alac -movflags +faststart -metadata:s:a gapless_playback=2 -y \"{2}\""
+			};
 
 			public static Type FLAC = new Type() { 
 				Name = "FLAC", 
@@ -191,7 +185,26 @@ namespace Transcoder
                 }
             };
 
-            public static Type WAV = new Type() { 
+			public static Type QTAAC = new Type()
+			{
+				Name = "QuickTime AAC (CVBR)",
+				Encoder = Encoder.QAAC,
+				FileExtension = ".m4a",
+				IsBitrateRequired = true,
+				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\"",
+				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\""
+			};
+
+			public static Type QTALAC = new Type()
+			{
+				Name = "QuickTime ALAC",
+				Encoder = Encoder.QAAC,
+				FileExtension = ".m4a",
+				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\"",
+				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\""
+			};
+
+			public static Type WAV = new Type() { 
 				Name = "WAV",
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".wav",
