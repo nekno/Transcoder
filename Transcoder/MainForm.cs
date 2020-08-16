@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -145,68 +146,47 @@ namespace Transcoder
 			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 			TokenSource = new CancellationTokenSource();
 
+			long totalSamples = 0;
+			var csvBuilder = new StringBuilder();
+			var outputFolder = outputTextbox.Text;
+
 			await Task.Run(async () => {
-				int i = 0;
-				while (i < TranscoderFiles.Count) {
-					var file = TranscoderFiles[i];
-					
-					using (var decoder = new Process())
-					using (var encoder = new Process()) {
-						decoder.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFMPEG.FilePath),
-							Arguments = String.Format("-i \"{0}\" -vn -f wav {1} -", file.FilePath, TranscoderFile.Type.WAV.BitDepthArgs(file.BitDepth)),
-							WindowStyle = ProcessWindowStyle.Hidden,
-							CreateNoWindow = true,
-							UseShellExecute = false,
-							RedirectStandardInput = true,
-							RedirectStandardOutput = true,
-							RedirectStandardError = true
-						};
-						decoder.EnableRaisingEvents = true;
-						decoder.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
-							if (processEventArgs.Data != null) {
-								file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
-							}
-						};
+                if (!Directory.Exists(outputFolder))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(outputFolder);
+                    }
+                    catch (Exception ex)
+                    {
+                        updateStatus(ex.Message);
+                        return;
+                    }
+                }
 
-						encoder.StartInfo = new ProcessStartInfo() {
-							FileName = Path.Combine(Environment.CurrentDirectory, encoderType.Encoder.FilePath),
-							Arguments = file.BuildCommandLineArgs(encoderType, bitrate, outputTextbox.Text),
-							WindowStyle = ProcessWindowStyle.Hidden,
-							CreateNoWindow = true,
-							UseShellExecute = false,
-							RedirectStandardInput = true,
-							RedirectStandardOutput = true,
-							RedirectStandardError = true
-						};
-						encoder.EnableRaisingEvents = true;
-						encoder.OutputDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
-							file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
-							updateStatus(processEventArgs.Data);
-						};
-						encoder.ErrorDataReceived += delegate(object processSender, DataReceivedEventArgs processEventArgs) {
-							if (processEventArgs.Data != null && !processEventArgs.Data.StartsWith("[")) {
-								file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
-							}
-							updateStatus(processEventArgs.Data);
-						};
-						encoder.Exited += delegate(object processSender, EventArgs processEventArgs) {
-							file.Done = true;
-							resetTranscoderFile(file);
-						};
-
+                if (encoderType.Encoder.IsEncodingRequired)
+				{
+					int i = 0;
+					while (i < TranscoderFiles.Count)
+					{
 						selectDataGridViewRow(i);
 
-						var destinationFolder = file.OutputFolderPath(outputTextbox.Text);
+						var file = TranscoderFiles[i];
+						var destinationFolder = file.OutputFolderPath(outputFolder);
 
-						if (!Directory.Exists(destinationFolder)) {
-							try {
+						if (!Directory.Exists(destinationFolder))
+						{
+							try
+							{
 								Directory.CreateDirectory(destinationFolder);
-							} catch (Exception ex) {
+							}
+							catch (Exception ex)
+							{
 								file.Log.AppendLine(ex.Message);
 								updateStatus(ex.Message);
 
-								if (TokenSource.IsCancellationRequested) {
+								if (TokenSource.IsCancellationRequested)
+								{
 									updateStatus("Stopped");
 									return;
 								}
@@ -216,48 +196,145 @@ namespace Transcoder
 							}
 						}
 
-                        encoder.Start();
-						encoder.BeginOutputReadLine();
-						encoder.BeginErrorReadLine();
+						using (var decoder = new Process())
+						using (var encoder = new Process())
+						{
+							decoder.StartInfo = new ProcessStartInfo()
+							{
+								FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFMPEG.FilePath),
+								Arguments = String.Format("-i \"{0}\" -vn -f wav {1} -", file.FilePath, TranscoderFile.Type.WAV.BitDepthArgs(file.Stream.BitDepth)),
+								WindowStyle = ProcessWindowStyle.Hidden,
+								CreateNoWindow = true,
+								UseShellExecute = false,
+								RedirectStandardInput = true,
+								RedirectStandardOutput = true,
+								RedirectStandardError = true
+							};
+							decoder.EnableRaisingEvents = true;
+							decoder.ErrorDataReceived += delegate (object processSender, DataReceivedEventArgs processEventArgs)
+							{
+								if (processEventArgs.Data != null)
+								{
+									file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
+								}
+							};
 
-						if (file.RequiresDecoding) {
-                            file.Log.AppendLine(String.Format("{0} {1}", decoder.StartInfo.FileName, decoder.StartInfo.Arguments));
-                            file.Log.AppendLine(String.Format("{0} {1}", encoder.StartInfo.FileName, encoder.StartInfo.Arguments));
-                            decoder.Start();
-							decoder.BeginErrorReadLine();
+							encoder.StartInfo = new ProcessStartInfo()
+							{
+								FileName = Path.Combine(Environment.CurrentDirectory, encoderType.Encoder.FilePath),
+								Arguments = file.BuildCommandLineArgs(encoderType, bitrate, outputTextbox.Text),
+								WindowStyle = ProcessWindowStyle.Hidden,
+								CreateNoWindow = true,
+								UseShellExecute = false,
+								RedirectStandardInput = true,
+								RedirectStandardOutput = true,
+								RedirectStandardError = true
+							};
+							encoder.EnableRaisingEvents = true;
+							encoder.OutputDataReceived += delegate (object processSender, DataReceivedEventArgs processEventArgs)
+							{
+								file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
+								updateStatus(processEventArgs.Data);
+							};
+							encoder.ErrorDataReceived += delegate (object processSender, DataReceivedEventArgs processEventArgs)
+							{
+								if (processEventArgs.Data != null && !processEventArgs.Data.StartsWith("["))
+								{
+									file.Log.AppendLine(String.Format("{0}", processEventArgs.Data));
+								}
+								updateStatus(processEventArgs.Data);
+							};
+							encoder.Exited += delegate (object processSender, EventArgs processEventArgs)
+							{
+								file.Done = true;
+								resetTranscoderFile(file);
+							};
 
-							try {
-								await decoder.StandardOutput.BaseStream.CopyToAsync(encoder.StandardInput.BaseStream, 4096, TokenSource.Token);
-								await encoder.StandardInput.BaseStream.FlushAsync(TokenSource.Token);
-							} catch (TaskCanceledException) { }
+							encoder.Start();
+							encoder.BeginOutputReadLine();
+							encoder.BeginErrorReadLine();
 
-							encoder.StandardInput.Close();
-						} else {
-                            file.Log.AppendLine(String.Format("{0} {1}", encoder.StartInfo.FileName, encoder.StartInfo.Arguments));
-                        }
+							if (file.RequiresDecoding)
+							{
+								file.Log.AppendLine(String.Format("{0} {1}", decoder.StartInfo.FileName, decoder.StartInfo.Arguments));
+								file.Log.AppendLine(String.Format("{0} {1}", encoder.StartInfo.FileName, encoder.StartInfo.Arguments));
+								decoder.Start();
+								decoder.BeginErrorReadLine();
 
-                        while (!TokenSource.IsCancellationRequested && !encoder.HasExited) {
-							encoder.WaitForExit(500);
+								try
+								{
+									await decoder.StandardOutput.BaseStream.CopyToAsync(encoder.StandardInput.BaseStream, 4096, TokenSource.Token);
+									await encoder.StandardInput.BaseStream.FlushAsync(TokenSource.Token);
+								}
+								catch (TaskCanceledException) { }
+
+								encoder.StandardInput.Close();
+							}
+							else
+							{
+								file.Log.AppendLine(String.Format("{0} {1}", encoder.StartInfo.FileName, encoder.StartInfo.Arguments));
+							}
+
+							while (!TokenSource.IsCancellationRequested && !encoder.HasExited)
+							{
+								encoder.WaitForExit(500);
+							}
+
+							if (file.RequiresDecoding && !decoder.HasExited)
+							{
+								decoder.Kill();
+							}
+
+							if (!encoder.HasExited)
+							{
+								encoder.Kill();
+							}
+
+							if (encoder.ExitCode == 0 || file.RequiresDecoding)
+							{
+								i++; // goto next file
+							}
+							else
+							{
+								file.RequiresDecoding = true; // try again with decoding
+							}
 						}
 
-						if (file.RequiresDecoding && !decoder.HasExited) {
-							decoder.Kill();
-						}
-
-						if (!encoder.HasExited) {
-							encoder.Kill();
-						}
-
-						if (encoder.ExitCode == 0 || file.RequiresDecoding) {
-							i++; // goto next file
-						} else {
-							file.RequiresDecoding = true; // try again with decoding
-						}
-
-						if (TokenSource.IsCancellationRequested) {
+						if (TokenSource.IsCancellationRequested)
+						{
 							updateStatus("Stopped");
 							return;
 						}
+					}
+				} 
+				else
+                {
+					for (int i = 0; i < TranscoderFiles.Count; i++)
+					{
+						selectDataGridViewRow(i);
+						var file = TranscoderFiles[i];
+
+						if (file.Stream.Samples.HasValue)
+						{
+							updateStatus(String.Format("Adding file to CSV {0}, {1}", i, file.FileName));
+							csvBuilder.AppendLine(String.Join(",", (i+1).ToString(), quoted(file.Stream.Title ?? Path.GetFileNameWithoutExtension(file.FileName)), totalSamples, file.Stream.Samples));
+							totalSamples += file.Stream.Samples.Value;
+						}
+						else
+						{
+							updateStatus(String.Format("No sample count for file {0}, {1}. Skipping.", i, file.FileName));
+						}
+
+						if (TokenSource.IsCancellationRequested)
+						{
+							updateStatus("Stopped");
+							return;
+						}
+					}
+
+					if (csvBuilder.Length > 0)
+					{
+						File.WriteAllText(Path.Combine(outputFolder, "Regions.csv"), csvBuilder.ToString());
 					}
 				}
 
@@ -266,6 +343,11 @@ namespace Transcoder
 			}, TokenSource.Token);
 
 			setRunning(false);
+		}
+
+		private String quoted(String str)
+        {
+			return str.Contains(",") ? String.Format("\"{0}\"", str) : str;
 		}
 
 		private delegate void RunningCallback(bool running);
