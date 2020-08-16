@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -26,8 +27,7 @@ namespace Transcoder
         #endregion
 
         #region Public Properties
-
-        public Int32? BitDepth { get; protected set; }
+		
 		public bool Done { get; set; }
 		public String FileName
 		{
@@ -40,6 +40,7 @@ namespace Transcoder
 		public String Folder { get; protected set; }
         public StringBuilder Log { get; set; } = new StringBuilder();
 		public bool RequiresDecoding { get; set; }
+		public StreamInfo Stream { get; protected set; }
 
         #endregion
 
@@ -75,8 +76,8 @@ namespace Transcoder
         #region Constructors
 
         public TranscoderFile(String filePath, String rootFolderPath = null) {
-			BitDepth = bitDepth(filePath);
 			FilePath = filePath;
+			Stream = new StreamInfo(filePath);
 
 			if (filePath == null || rootFolderPath == null) {
 				Folder = String.Empty;
@@ -101,7 +102,7 @@ namespace Transcoder
 				FilePath, 
 				encoderType.BitrateArgs(bitrate),
                 OutputFilePath(encoderType, baseOutputFolder),
-				encoderType.BitDepthArgs(BitDepth)
+				encoderType.BitDepthArgs(Stream.BitDepth)
 			);
 
             return args;
@@ -126,40 +127,6 @@ namespace Transcoder
         #endregion
 
         #region Protected Methods
-
-        protected Int32? bitDepth(String filePath)
-		{
-			using (var decoder = new Process())
-			{
-				Int32? bitDepth = null;
-
-				decoder.StartInfo = new ProcessStartInfo()
-				{
-					FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFPROBE.FilePath),
-					Arguments = String.Format("-select_streams a -show_entries stream=bits_per_raw_sample -of flat \"{0}\"", filePath),
-					WindowStyle = ProcessWindowStyle.Hidden,
-					CreateNoWindow = true,
-					UseShellExecute = false,
-					RedirectStandardInput = false,
-					RedirectStandardOutput = true,
-					RedirectStandardError = false
-				};
-
-				decoder.Start();
-				var output = decoder.StandardOutput.ReadToEnd();
-
-				var match = Regex.Match(output, "^streams.stream.0.bits_per_raw_sample=\"([\\d]+)\"");
-				if (match.Success && match.Groups.Count == 2)
-				{
-					if (Int32.TryParse(match.Groups[1].Value, out int bitValue))
-					{
-						bitDepth = bitValue;
-					}
-				}
-
-				return bitDepth;
-			}
-		}
 
         #endregion
 
