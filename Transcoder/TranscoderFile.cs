@@ -184,7 +184,6 @@ namespace Transcoder
 				Name = "FFMPEG ALAC",
 				Encoder = Encoder.FFMPEG,
 				FileExtension = ".m4a",
-				CommandLineArgsWithDecoding = String.Empty,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a alac -movflags +faststart -metadata:s:a gapless_playback=2 -y \"{2}\""
 			};
 
@@ -192,7 +191,6 @@ namespace Transcoder
 				Name = "FLAC", 
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".flac",
-				CommandLineArgsWithDecoding = String.Empty,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
 			};
 
@@ -202,7 +200,6 @@ namespace Transcoder
                 Encoder = Encoder.FFMPEG,
                 FileExtension = ".mp3",
                 IsBitrateRequired = true,
-                CommandLineArgsWithDecoding = String.Empty,
                 CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a libmp3lame -b:a {1}k -y \"{2}\""
             };
 
@@ -212,7 +209,6 @@ namespace Transcoder
                 Encoder = Encoder.FFMPEG,
                 FileExtension = ".mp3",
                 IsBitrateRequired = true,
-                CommandLineArgsWithDecoding = String.Empty,
                 CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a libmp3lame {1} -y \"{2}\"",
                 BitrateMap =
                 {
@@ -256,7 +252,6 @@ namespace Transcoder
 				Name = "WAV",
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".wav",
-				CommandLineArgsWithDecoding = String.Empty,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y {3} \"{2}\"",
 				BitDepthMap =
 				{
@@ -270,10 +265,10 @@ namespace Transcoder
 
             #region Public Properties
 
-            public String Name { get; protected set; }
-            public Encoder Encoder { get; protected set; }
-            public String FileExtension { get; protected set; }
-			public Boolean IsBitrateRequired { get; protected set; }
+            public String Name { get; set; }
+            public Encoder Encoder { get; set; }
+            public String FileExtension { get; set; }
+			public Boolean IsBitrateRequired { get; set; }
 
 			protected Dictionary<Int32, String> BitDepthMap { get; set; } = new Dictionary<Int32, String>();
             protected Dictionary<Int32, String> BitrateMap { get; set; } = new Dictionary<Int32, String>();
