@@ -319,6 +319,9 @@ namespace Transcoder
 
 			public StreamInfo(String filePath)
             {
+				if (!File.Exists(filePath))
+					return;
+
 				using (var decoder = new Process())
 				{
 					decoder.StartInfo = new ProcessStartInfo()
