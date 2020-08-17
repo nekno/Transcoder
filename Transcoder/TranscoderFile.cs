@@ -142,15 +142,33 @@ namespace Transcoder
 			RequiresDecoding = false;
 		}
 
-        #endregion
+		#endregion
 
-        #region Protected Methods
+		#region Protected Methods
 
-        #endregion
+		List<String> parseCsv(String csvLine)
+		{
+			List<string> values = new List<string>(csvLine.Split(','));
 
-        #region Sub Types
+			for (int i = 0; i < values.Count; i++)
+			{
+				string value = values[i];
+				if (value.StartsWith("\"") && value.Length < i + 1)
+				{
+					value = value.TrimStart('\"') + values[i + 1].TrimEnd('\"');
+					values[i] = value;
+					values.RemoveAt(++i);
+				}
+			}
 
-        public class Type
+			return values;
+		}
+
+		#endregion
+
+		#region Sub Types
+
+		public class Type
 		{
 			#region Static Fields
 
