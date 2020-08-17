@@ -29,6 +29,7 @@ namespace Transcoder
         #region Public Properties
 		
 		public bool Done { get; set; }
+		public String EndTime { get; set; }
 		public String FileName
 		{
 			get
@@ -40,6 +41,7 @@ namespace Transcoder
 		public String Folder { get; protected set; }
         public StringBuilder Log { get; set; } = new StringBuilder();
 		public bool RequiresDecoding { get; set; }
+		public String StartTime { get; set; }
 		public StreamInfo Stream { get; protected set; }
 
         #endregion
@@ -92,20 +94,36 @@ namespace Transcoder
 			Folder = destSubfolderRelativePath;
 		}
 
-        #endregion
+		#endregion
 
         #region Public Methods
 
         public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder) {
             var args =  String.Format(
 				encoderType.CommandLineArgs(RequiresDecoding), 
-				FilePath, 
-				encoderType.BitrateArgs(bitrate),
-                OutputFilePath(encoderType, baseOutputFolder),
-				encoderType.BitDepthArgs(Stream.BitDepth)
+				FilePath, // 0
+				encoderType.BitrateArgs(bitrate), // 1
+                OutputFilePath(encoderType, baseOutputFolder), // 2
+				encoderType.BitDepthArgs(Stream.BitDepth), // 3
+				StartTime, // 4
+				EndTime // 5
 			);
 
             return args;
+		}
+
+		public TranscoderFile GetFile(String csvLine)
+        {
+			var values = parseCsv(csvLine);
+
+			if (values.Count < 4)
+				throw new FormatException();
+
+            return new TranscoderFile(String.Format("{0} - {1}.{2}", values[0], values[1], Path.GetExtension(FileName)), FilePath)
+			{
+				StartTime = values[2],
+				EndTime = values[3]
+			};
 		}
 
 		public String OutputFilePath(Type encoderType, String baseOutputFolder)
