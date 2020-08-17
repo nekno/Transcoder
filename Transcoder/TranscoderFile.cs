@@ -20,6 +20,7 @@ namespace Transcoder
             Type.MP3CBR,
             Type.MP3VBR,
             Type.WAV,
+			Type.SplitInput,
 			Type.CSV,
 		};
 
@@ -206,6 +207,13 @@ namespace Transcoder
 				FileExtension = ".m4a",
 				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\"",
 				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\""
+			};
+
+			public static Type SplitInput = new Type()
+			{
+				Name = "Split input file",
+				Encoder = Encoder.FFMPEG,
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c copy -ss {4} -to {5} -y \"{2}\""
 			};
 
 			public static Type WAV = new Type() { 
