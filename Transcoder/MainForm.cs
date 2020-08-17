@@ -142,14 +142,11 @@ namespace Transcoder
 
 			var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
 			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
+			var outputFolder = outputTextbox.Text;
 			TokenSource = new CancellationTokenSource();
 
-			long totalSamples = 0;
-			var csvBuilder = new StringBuilder();
-			var outputFolder = outputTextbox.Text;
-
 			await Task.Run(async () => {
-                if (!Directory.Exists(outputFolder))
+				if (!Directory.Exists(outputFolder))
                 {
                     try
                     {
@@ -341,8 +338,11 @@ namespace Transcoder
 						}
 					}
 				} 
-				else if (encoderType.Encoder == Encoder.CSV)
+				else if (encoderType == TranscoderFile.Type.CSV)
                 {
+					long totalSamples = 0;
+					var csvBuilder = new StringBuilder();
+					
 					for (int i = 0; i < TranscoderFiles.Count; i++)
 					{
 						selectDataGridViewRow(i);
