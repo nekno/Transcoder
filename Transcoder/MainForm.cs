@@ -146,6 +146,43 @@ namespace Transcoder
 			var outputFolder = outputTextbox.Text;
 			TokenSource = new CancellationTokenSource();
 
+			if (encoderType == TranscoderFile.Type.SplitInput)
+			{
+				var files = TranscoderFiles.ToList();
+				fileIdx = files.Count;
+
+				for (int i = 0; i < files.Count; i++)
+				{
+					selectDataGridViewRow(i);
+
+					var file = files[i];
+					var ofd = new OpenFileDialog()
+					{
+						Title = String.Format("Open CSV cutfile for {0}", file.FileName),
+						Filter = "Comma Separated Values (*.csv)|*.csv",
+						InitialDirectory = Path.GetDirectoryName(file.FilePath)
+					};
+
+					if (ofd.ShowDialog() != DialogResult.OK)
+					{
+						continue;
+					}
+
+					var csv = File.ReadAllLines(ofd.FileName);
+
+					foreach (var csvLine in csv)
+					{
+						try
+						{
+							TranscoderFiles.Add(file.GetFile(csvLine));
+						}
+						catch { }
+					}
+
+					file.Done = true;
+				}
+			}
+
 			await Task.Run(async () => {
 				if (!Directory.Exists(outputFolder))
                 {
@@ -162,38 +199,6 @@ namespace Transcoder
 
                 if (encoderType.Encoder.IsEncodingRequired)
 				{
-					if (encoderType == TranscoderFile.Type.SplitInput)
-                    {
-						var files = TranscoderFiles.ToList();
-						i = files.Count;
-
-						for (int ii = 0; ii < files.Count; ii++)
-						{
-							selectDataGridViewRow(ii);
-
-							var file = files[ii];
-
-							var task = Task.Factory.StartNew(openFile, file.FileName);
-							var result = await task.GetAwaiter().GetResult();
-							
-							if (result.Item1 != DialogResult.OK)
-                            {
-								continue;
-                            }
-
-							var csv = File.ReadAllLines(result.Item2);
-
-							foreach (var csvLine in csv)
-                            {
-								try
-								{
-									TranscoderFiles.Add(file.GetFile(csvLine));
-								}
-								catch { }
-							}
-						}
-                    }
-					
 					while (fileIdx < TranscoderFiles.Count)
 					{
 						selectDataGridViewRow(fileIdx);
@@ -378,17 +383,6 @@ namespace Transcoder
 			setRunning(false);
 		}
 
-		private async Task<(DialogResult, String)> openFile(object state)
-        {
-			var fileName = state as String;
-			var ofd = new OpenFileDialog()
-			{
-				Title = String.Format("Open CSV cutfile for {0}", fileName),
-				Filter = "Comma Separated Values (*.csv)|*.csv"
-			};
-			var dialogResult = ofd.ShowDialog();
-			return (dialogResult, ofd.FileName);
-		}
 		private String quoted(String str)
         {
 			return str.Contains(",") ? String.Format("\"{0}\"", str) : str;
