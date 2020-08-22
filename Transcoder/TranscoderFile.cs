@@ -41,6 +41,7 @@ namespace Transcoder
 		public String Folder { get; protected set; }
         public StringBuilder Log { get; set; } = new StringBuilder();
 		public bool RequiresDecoding { get; set; }
+		public TranscoderFile SourceFile { get; protected set; }
 		public String StartTime { get; set; }
 		public StreamInfo Stream { get; protected set; }
 
@@ -81,7 +82,7 @@ namespace Transcoder
 			FilePath = filePath;
 			Stream = new StreamInfo(filePath);
 
-			if (filePath == null || rootFolderPath == null) {
+			if (String.IsNullOrEmpty(filePath) || String.IsNullOrEmpty(rootFolderPath)) {
 				Folder = String.Empty;
 				return;
 			}
@@ -101,7 +102,7 @@ namespace Transcoder
         public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder) {
             var args =  String.Format(
 				encoderType.CommandLineArgs(RequiresDecoding), 
-				FilePath, // 0
+				SourceFile?.FilePath ?? FilePath, // 0
 				encoderType.BitrateArgs(bitrate), // 1
                 OutputFilePath(encoderType, baseOutputFolder), // 2
 				encoderType.BitDepthArgs(Stream.BitDepth), // 3
@@ -119,8 +120,9 @@ namespace Transcoder
 			if (values.Count < 4)
 				throw new FormatException();
 
-            return new TranscoderFile(String.Format("{0} - {1}.{2}", values[0], values[1], Path.GetExtension(FileName)), FilePath)
+            return new TranscoderFile(String.Format("{0} - {1}{2}", values[0], values[1], Path.GetExtension(FileName)), Folder)
 			{
+				SourceFile = this,
 				StartTime = values[2],
 				EndTime = values[3]
 			};
