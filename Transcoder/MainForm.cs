@@ -140,6 +140,7 @@ namespace Transcoder
 				
 			setRunning(true);
 
+			var fileIdx = 0;
 			var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
 			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 			var outputFolder = outputTextbox.Text;
@@ -161,8 +162,6 @@ namespace Transcoder
 
                 if (encoderType.Encoder.IsEncodingRequired)
 				{
-					int i = 0;
-
 					if (encoderType == TranscoderFile.Type.SplitInput)
                     {
 						var files = TranscoderFiles.ToList();
@@ -195,11 +194,11 @@ namespace Transcoder
 						}
                     }
 					
-					while (i < TranscoderFiles.Count)
+					while (fileIdx < TranscoderFiles.Count)
 					{
-						selectDataGridViewRow(i);
+						selectDataGridViewRow(fileIdx);
 
-						var file = TranscoderFiles[i];
+						var file = TranscoderFiles[fileIdx];
 						var destinationFolder = file.OutputFolderPath(outputFolder);
 
 						if (!Directory.Exists(destinationFolder))
@@ -219,7 +218,7 @@ namespace Transcoder
 									return;
 								}
 
-								i++;
+								fileIdx++;
 								continue;
 							}
 						}
@@ -323,7 +322,7 @@ namespace Transcoder
 
 							if (encoder.ExitCode == 0 || file.RequiresDecoding)
 							{
-								i++; // goto next file
+								fileIdx++; // goto next file
 							}
 							else
 							{
