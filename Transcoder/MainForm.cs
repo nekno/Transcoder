@@ -437,6 +437,7 @@ namespace Transcoder
 
 			Running = running;
 			goButton.Text = running ? "&Stop" : "&Go";
+			filesDataGridView.InvalidateColumn(0);
 		}
 
 		private delegate void SelectDataGridViewRowCallback(int index);
