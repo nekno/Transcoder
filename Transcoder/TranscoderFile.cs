@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using MediaInfoLib;
@@ -116,7 +117,7 @@ namespace Transcoder
 
 		public TranscoderFile GetFile(String csvLine)
         {
-			var values = parseCsv(csvLine);
+			var values = ParseCsv(csvLine);
 
 			if (values.Count < 4)
 				throw new FormatException();
@@ -149,18 +150,32 @@ namespace Transcoder
 
 		#region Protected Methods
 
-		List<String> parseCsv(String csvLine)
-		{
-			List<string> values = new List<string>(csvLine.Split(','));
 
+		List<String> ParseCsv(String csvLine)
+		{
+			var values = new List<string>(csvLine.Split(','));
+			
 			for (int i = 0; i < values.Count; i++)
 			{
 				string value = values[i];
-				if (value.StartsWith("\"") && value.Length < i + 1)
+				var countToHere = i + 1;
+
+				if (value.StartsWith("\"") && countToHere < values.Count && values.Skip(countToHere).FirstOrDefault(v => v.EndsWith("\"")) != null)
 				{
-					value = value.TrimStart('\"') + values[i + 1].TrimEnd('\"');
-					values[i] = value;
-					values.RemoveAt(++i);
+					var valueList = new List<string>() 
+					{ 
+						value.TrimStart('\"') 
+					};
+
+					var subValues = values.Skip(countToHere).TakeWhile(v => !v.EndsWith("\""));
+					valueList.AddRange(subValues);
+
+					var lastValueIdx = countToHere + subValues.Count();
+					valueList.Add(values[lastValueIdx].TrimEnd('\"'));
+
+					values[i] = String.Join(",", valueList);
+
+					values.RemoveRange(countToHere, valueList.Count - 1);
 				}
 			}
 
