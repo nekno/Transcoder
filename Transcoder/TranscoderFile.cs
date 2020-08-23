@@ -20,8 +20,9 @@ namespace Transcoder
             Type.MP3CBR,
             Type.MP3VBR,
             Type.WAV,
+			Type.CutfileCSV,
+			Type.RegionsCSV,
 			Type.SplitInput,
-			Type.CSV,
 		};
 
         #endregion
@@ -174,9 +175,9 @@ namespace Transcoder
 		{
 			#region Static Fields
 
-			public static Type CSV = new Type()
+			public static Type CutfileCSV = new Type()
 			{
-				Name = "Sound Forge Regions CSV",
+				Name = "Cutfile CSV",
 				Encoder = Encoder.CSV,
 				FileExtension = ".csv"
 			};
@@ -243,9 +244,16 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -A -o \"{2}\""
 			};
 
+			public static Type RegionsCSV = new Type()
+			{
+				Name = "Sound Forge Regions CSV",
+				Encoder = Encoder.CSV,
+				FileExtension = ".csv"
+			};
+
 			public static Type SplitInput = new Type()
 			{
-				Name = "Split input file",
+				Name = "Split by Cutfile",
 				Encoder = Encoder.FFMPEG,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c copy -ss {4} -to {5} -y \"{2}\""
 			};

@@ -341,39 +341,49 @@ namespace Transcoder
 							return;
 						}
 					}
+				}
+				else if (encoderType == TranscoderFile.Type.CutfileCSV)
+				{
+					var totalDuration = new TimeSpan();
+
+					writeCsv(Path.Combine(outputFolder, "Cutfile.csv"), (file, i, csvBuilder) =>
+					{
+						if (!String.IsNullOrEmpty(file.Stream.Duration))
+						{
+							updateStatus(String.Format("Adding file to CSV {0}, {1}", i, file.FileName));
+
+							var duration = TimeSpan.Parse(file.Stream.Duration);
+							file.StartTime = totalDuration.ToString();
+							totalDuration = totalDuration.Add(duration);
+							file.EndTime = totalDuration.ToString();
+
+							csvBuilder.AppendLine(String.Join(",", (i + 1).ToString(), quoted(file.Stream.Title ?? Path.GetFileNameWithoutExtension(file.FileName)), file.StartTime, file.EndTime));
+						}
+						else
+						{
+							updateStatus(String.Format("No duration for file {0}, {1}. Skipping.", i, file.FileName));
+						}
+					});
 				} 
-				else if (encoderType == TranscoderFile.Type.CSV)
+				else if (encoderType == TranscoderFile.Type.RegionsCSV)
                 {
 					long totalSamples = 0;
-					var csvBuilder = new StringBuilder();
-					
-					for (int i = 0; i < TranscoderFiles.Count; i++)
-					{
-						selectDataGridViewRow(i);
-						var file = TranscoderFiles[i];
 
+					writeCsv(Path.Combine(outputFolder, "Regions.csv"), (file, i, csvBuilder) =>
+					{
 						if (file.Stream.Samples.HasValue)
 						{
 							updateStatus(String.Format("Adding file to CSV {0}, {1}", i, file.FileName));
-							csvBuilder.AppendLine(String.Join(",", (i+1).ToString(), quoted(file.Stream.Title ?? Path.GetFileNameWithoutExtension(file.FileName)), totalSamples, file.Stream.Samples));
+
+							csvBuilder.AppendLine(String.Join(",", (i + 1).ToString(), quoted(file.Stream.Title ?? Path.GetFileNameWithoutExtension(file.FileName)), totalSamples, file.Stream.Samples));
+
 							totalSamples += file.Stream.Samples.Value;
 						}
 						else
 						{
 							updateStatus(String.Format("No sample count for file {0}, {1}. Skipping.", i, file.FileName));
 						}
-
-						if (TokenSource.IsCancellationRequested)
-						{
-							updateStatus("Stopped");
-							return;
-						}
-					}
-
-					if (csvBuilder.Length > 0)
-					{
-						File.WriteAllText(Path.Combine(outputFolder, "Regions.csv"), csvBuilder.ToString());
-					}
+					});
 				}
 
 				updateStatus("Ready");
@@ -386,6 +396,36 @@ namespace Transcoder
 		private String quoted(String str)
         {
 			return str.Contains(",") ? String.Format("\"{0}\"", str) : str;
+		}
+
+		private void writeCsv(string csvFilePath, Action<TranscoderFile, Int32, StringBuilder> buildCsv)
+		{
+			var csvBuilder = new StringBuilder();
+
+			for (int i = 0; i < TranscoderFiles.Count; i++)
+			{
+				selectDataGridViewRow(i);
+				var file = TranscoderFiles[i];
+
+				buildCsv(file, i, csvBuilder);
+				file.Done = true;
+
+				if (TokenSource.IsCancellationRequested)
+				{
+					if (csvBuilder.Length > 0)
+					{
+						File.WriteAllText(csvFilePath, csvBuilder.ToString());
+					}
+
+					updateStatus("Stopped");
+					return;
+				}
+			}
+
+			if (csvBuilder.Length > 0)
+			{
+				File.WriteAllText(csvFilePath, csvBuilder.ToString());
+			}
 		}
 
 		private delegate void RunningCallback(bool running);
