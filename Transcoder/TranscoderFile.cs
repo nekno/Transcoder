@@ -316,6 +316,7 @@ namespace Transcoder
 		public class StreamInfo
         {
 			public Int32? BitDepth { get; protected set; }
+			public String Duration { get; protected set; }
 			public Int64? Samples { get; protected set; }
 			public String Title { get; protected set; }
 
@@ -329,7 +330,7 @@ namespace Transcoder
 					decoder.StartInfo = new ProcessStartInfo()
 					{
 						FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFPROBE.FilePath),
-						Arguments = String.Format("-select_streams a -show_entries stream=bits_per_raw_sample,duration_ts:format_tags=title -of flat \"{0}\"", filePath),
+						Arguments = String.Format("-sexagesimal -select_streams a -show_entries stream=bits_per_raw_sample,duration,duration_ts:format_tags=title -of flat \"{0}\"", filePath),
 						WindowStyle = ProcessWindowStyle.Hidden,
 						CreateNoWindow = true,
 						UseShellExecute = false,
@@ -349,6 +350,12 @@ namespace Transcoder
 						{
 							BitDepth = bitValue;
 						}
+					}
+
+					var durationMatch = Regex.Match(output, "^streams.stream.0.duration=\"(.+)\"\r?$", RegexOptions.Multiline);
+					if (durationMatch.Success && durationMatch.Groups.Count == 2)
+					{
+						Duration = durationMatch.Groups[1].Value;
 					}
 
 					var samplesMatch = Regex.Match(output, "^streams.stream.0.duration_ts=([\\d]+)\r?$", RegexOptions.Multiline);
