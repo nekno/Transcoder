@@ -122,7 +122,7 @@ namespace Transcoder
 			if (values.Count < 4)
 				throw new FormatException();
 
-            return new TranscoderFile(String.Format("{0} - {1}{2}", values[0], values[1], Path.GetExtension(FileName)), Folder)
+            return new TranscoderFile(String.Format("{0} - {1}{2}", values[0], GetSafeFileName(values[1]), Path.GetExtension(FileName)), Folder)
 			{
 				SourceFile = this,
 				StartTime = values[2],
@@ -150,6 +150,17 @@ namespace Transcoder
 
 		#region Protected Methods
 
+		String GetSafeFileName(String fileName)
+        {
+			var safeFileName = fileName;
+
+			foreach (var chr in Path.GetInvalidFileNameChars())
+            {
+				safeFileName = safeFileName.Replace(chr, '-');
+            }
+
+			return safeFileName;
+        }
 
 		List<String> ParseCsv(String csvLine)
 		{
