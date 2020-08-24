@@ -162,35 +162,54 @@ namespace Transcoder
 			return safeFileName;
         }
 
+		private Int32? indexOfClosingQuote(List<String> values, Int32 startIdx)
+        {
+			for (int i = startIdx; i < values.Count; i++)
+            {
+				if (values[i].EndsWith("\""))
+                {
+					return i;
+                }
+            }
+
+			return null;
+        }
+
 		List<String> ParseCsv(String csvLine)
 		{
 			var values = new List<string>(csvLine.Split(','));
+			var returnValues = new List<string>(values.Count);
 			
 			for (int i = 0; i < values.Count; i++)
 			{
 				string value = values[i];
 				var countToHere = i + 1;
 
-				if (value.StartsWith("\"") && countToHere < values.Count && values.Skip(countToHere).FirstOrDefault(v => v.EndsWith("\"")) != null)
+				if (value.StartsWith("\"") && countToHere < values.Count)
 				{
-					var valueList = new List<string>() 
-					{ 
-						value.TrimStart('\"') 
-					};
-
-					var subValues = values.Skip(countToHere).TakeWhile(v => !v.EndsWith("\""));
-					valueList.AddRange(subValues);
-
-					var lastValueIdx = countToHere + subValues.Count();
-					valueList.Add(values[lastValueIdx].TrimEnd('\"'));
-
-					values[i] = String.Join(",", valueList);
-
-					values.RemoveRange(countToHere, valueList.Count - 1);
+					var endIdx = values.FindIndex(countToHere, v => v.EndsWith("\""));
+					if (endIdx >= 0)
+                    {
+						returnValues.Add(value.TrimStart('\"'));
+						var returnValueIdx = returnValues.Count - 1;
+						while (++i < endIdx)
+						{
+							returnValues[returnValueIdx] = String.Join(",", returnValues[returnValueIdx], values[i]);
+						}
+						returnValues[returnValueIdx] = String.Join(",", returnValues[returnValueIdx], values[i].TrimEnd('\"'));
+                    }
+					else
+                    {
+						returnValues.Add(value);
+					}
 				}
+				else
+                {
+					returnValues.Add(value);
+                }
 			}
 
-			return values;
+			return returnValues;
 		}
 
 		#endregion
