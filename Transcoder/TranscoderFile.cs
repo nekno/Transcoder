@@ -238,14 +238,14 @@ namespace Transcoder
 				Name = "FFMPEG ALAC",
 				Encoder = Encoder.FFMPEG,
 				FileExtension = ".m4a",
-				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a alac -movflags +faststart -metadata:s:a gapless_playback=2 -y \"{2}\""
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a alac -movflags +faststart -metadata:s:a gapless_playback=2 -y \"{2}\""
 			};
 
 			public static Type FLAC = new Type() { 
 				Name = "FLAC", 
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".flac",
-				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y \"{2}\""
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -y \"{2}\""
 			};
 
             public static Type MP3CBR = new Type()
@@ -254,7 +254,7 @@ namespace Transcoder
                 Encoder = Encoder.FFMPEG,
                 FileExtension = ".mp3",
                 IsBitrateRequired = true,
-                CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a libmp3lame -b:a {1}k -y \"{2}\""
+                CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame -b:a {1}k -y \"{2}\""
             };
 
             public static Type MP3VBR = new Type()
@@ -263,7 +263,7 @@ namespace Transcoder
                 Encoder = Encoder.FFMPEG,
                 FileExtension = ".mp3",
                 IsBitrateRequired = true,
-                CommandLineArgsWithoutDecoding = "-i \"{0}\" -c:a libmp3lame {1} -y \"{2}\"",
+                CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame {1} -y \"{2}\"",
                 BitrateMap =
                 {
                     { 64, "-q:a 9" },
@@ -313,7 +313,7 @@ namespace Transcoder
 				Name = "WAV",
 				Encoder = Encoder.FFMPEG, 
 				FileExtension = ".wav",
-				CommandLineArgsWithoutDecoding = "-i \"{0}\" -y {3} \"{2}\"",
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -y {3} \"{2}\"",
 				BitDepthMap =
 				{
 					{ 16, "-c:a pcm_s16le" },
