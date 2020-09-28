@@ -352,7 +352,7 @@ namespace Transcoder
 						}
 					}
 				}
-				else if (encoderType == TranscoderFile.Type.CutfileCSV)
+				else if (encoderType == TranscoderFile.Type.TracksCSV)
 				{
 					var totalDuration = new TimeSpan();
 

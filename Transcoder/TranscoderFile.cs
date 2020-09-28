@@ -21,7 +21,7 @@ namespace Transcoder
             Type.MP3CBR,
             Type.MP3VBR,
             Type.WAV,
-			Type.CutfileCSV,
+			Type.TracksCSV,
 			Type.RegionsCSV,
 			Type.SplitInput,
 		};
@@ -226,13 +226,6 @@ namespace Transcoder
 		{
 			#region Static Fields
 
-			public static Type CutfileCSV = new Type()
-			{
-				Name = "Cutfile CSV",
-				Encoder = Encoder.CSV,
-				FileExtension = ".csv"
-			};
-
 			public static Type FFMPEG_ALAC = new Type()
 			{
 				Name = "FFMPEG ALAC",
@@ -307,6 +300,13 @@ namespace Transcoder
 				Name = "Split Input File",
 				Encoder = Encoder.FFMPEG,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c copy -ss {4} -to {5} -y \"{2}\""
+			};
+
+			public static Type TracksCSV = new Type()
+			{
+				Name = "Tracks CSV",
+				Encoder = Encoder.CSV,
+				FileExtension = ".csv"
 			};
 
 			public static Type WAV = new Type() { 
