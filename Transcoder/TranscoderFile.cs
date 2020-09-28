@@ -130,6 +130,16 @@ namespace Transcoder
 			};
 		}
 
+		public TranscoderFile GetFile(MatroskaChapter chapter)
+		{
+			return new TranscoderFile(String.Format("{0:000} - {1}{2}", chapter.Number, GetSafeFileName(chapter.Name), Path.GetExtension(FileName)), Folder)
+			{
+				SourceFile = this,
+				StartTime = chapter.StartTime,
+				EndTime = chapter.EndTime
+			};
+		}
+
 		public String OutputFilePath(Type encoderType, String baseOutputFolder)
 		{
 			return Path.Combine(OutputFolderPath(baseOutputFolder), Path.ChangeExtension(FileName, encoderType.FileExtension));
@@ -294,7 +304,7 @@ namespace Transcoder
 
 			public static Type SplitInput = new Type()
 			{
-				Name = "Split by Cutfile",
+				Name = "Split Input File",
 				Encoder = Encoder.FFMPEG,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c copy -ss {4} -to {5} -y \"{2}\""
 			};

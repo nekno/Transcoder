@@ -156,10 +156,11 @@ namespace Transcoder
 					selectDataGridViewRow(i);
 
 					var file = files[i];
+					IEnumerable<TranscoderFile> outputFiles = new List<TranscoderFile>();
 					var ofd = new OpenFileDialog()
 					{
-						Title = String.Format("Open CSV cutfile for {0}", file.FileName),
-						Filter = "Comma Separated Values (*.csv)|*.csv",
+						Title = String.Format("Select tracks/chapters for {0}", file.FileName),
+						Filter = "Comma Separated Values (*.csv)|*.csv|Matroska Chapters (*.xml)|*.xml",
 						InitialDirectory = Path.GetDirectoryName(file.FilePath)
 					};
 
@@ -168,13 +169,22 @@ namespace Transcoder
 						continue;
 					}
 
-					var csv = File.ReadAllLines(ofd.FileName);
+					if (Path.GetExtension(ofd.FileName) == ".csv")
+					{
+						outputFiles = from csvLine in File.ReadAllLines(ofd.FileName)
+									  select file.GetFile(csvLine);
+					}
+					else if (Path.GetExtension(ofd.FileName) == ".xml")
+                    {
+						outputFiles = from chapter in MatroskaChapter.GetChapters(ofd.FileName)
+									  select file.GetFile(chapter);
+					}
 
-					foreach (var csvLine in csv)
+					foreach (var outputFile in outputFiles)
 					{
 						try
 						{
-							TranscoderFiles.Add(file.GetFile(csvLine));
+							TranscoderFiles.Add(outputFile);
 						}
 						catch { }
 					}
