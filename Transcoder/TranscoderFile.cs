@@ -190,13 +190,9 @@ namespace Transcoder
 					var endIdx = values.FindIndex(countToHere, v => v.EndsWith("\""));
 					if (endIdx >= 0)
                     {
-						returnValues.Add(value.TrimStart('\"'));
-						var returnValueIdx = returnValues.Count - 1;
-						while (++i < endIdx)
-						{
-							returnValues[returnValueIdx] = String.Join(",", returnValues[returnValueIdx], values[i]);
-						}
-						returnValues[returnValueIdx] = String.Join(",", returnValues[returnValueIdx], values[i].TrimEnd('\"'));
+						var subValues = values.GetRange(i, endIdx - i + 1);
+						returnValues.Add(String.Join(",", subValues).Trim('\"'));
+						i = endIdx;
                     }
 					else
                     {
