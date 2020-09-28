@@ -122,7 +122,7 @@ namespace Transcoder
 			if (values.Count < 4)
 				throw new FormatException();
 
-            return new TranscoderFile(String.Format("{0} - {1}{2}", values[0], GetSafeFileName(values[1]), Path.GetExtension(FileName)), Folder)
+            return new TranscoderFile(String.Format("{0:000} - {1}{2}", values[0], GetSafeFileName(values[1]), Path.GetExtension(FileName)), Folder)
 			{
 				SourceFile = this,
 				StartTime = values[2],
