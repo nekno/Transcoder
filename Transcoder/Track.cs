@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Transcoder
 {
-    public class Track
-    {
+	public class Track : IMediaSegment
+	{
 		public String EndTime { get; protected set; }
 		public String Name { get; protected set; }
 		public Int32 Number { get; protected set; }

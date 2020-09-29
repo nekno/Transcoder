@@ -115,23 +115,13 @@ namespace Transcoder
             return args;
 		}
 
-		public TranscoderFile GetFile(Track track)
+		public TranscoderFile GetFile(IMediaSegment segment)
         {
-			return new TranscoderFile(String.Format("{0:000} - {1}{2}", track.Number, GetSafeFileName(track.Name), Path.GetExtension(FileName)), Folder)
+			return new TranscoderFile(String.Format("{0:000} - {1}{2}", segment.Number, GetSafeFileName(segment.Name), Path.GetExtension(FileName)), Folder)
 			{
 				SourceFile = this,
-				StartTime = track.StartTime,
-				EndTime = track.EndTime
-			};
-		}
-
-		public TranscoderFile GetFile(MatroskaChapter chapter)
-		{
-			return new TranscoderFile(String.Format("{0:000} - {1}{2}", chapter.Number, GetSafeFileName(chapter.Name), Path.GetExtension(FileName)), Folder)
-			{
-				SourceFile = this,
-				StartTime = chapter.StartTime,
-				EndTime = chapter.EndTime
+				StartTime = segment.StartTime,
+				EndTime = segment.EndTime
 			};
 		}
 

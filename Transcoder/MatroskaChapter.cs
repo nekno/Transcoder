@@ -5,7 +5,7 @@ using System.Xml.Linq;
 
 namespace Transcoder
 {
-    public class MatroskaChapter
+    public class MatroskaChapter : IMediaSegment
     {
         public String EndTime { get; protected set; }
         public String Name { get; protected set; }
