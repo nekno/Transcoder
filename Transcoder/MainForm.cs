@@ -171,8 +171,8 @@ namespace Transcoder
 
 					if (Path.GetExtension(ofd.FileName) == ".csv")
 					{
-						outputFiles = from csvLine in File.ReadAllLines(ofd.FileName)
-									  select file.GetFile(csvLine);
+						outputFiles = from track in Track.GetTracks(ofd.FileName)
+									  select file.GetFile(track);
 					}
 					else if (Path.GetExtension(ofd.FileName) == ".xml")
                     {

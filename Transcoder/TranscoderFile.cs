@@ -115,18 +115,13 @@ namespace Transcoder
             return args;
 		}
 
-		public TranscoderFile GetFile(String csvLine)
+		public TranscoderFile GetFile(Track track)
         {
-			var values = ParseCsv(csvLine);
-
-			if (values.Count < 4)
-				throw new FormatException();
-
-            return new TranscoderFile(String.Format("{0:000} - {1}{2}", values[0], GetSafeFileName(values[1]), Path.GetExtension(FileName)), Folder)
+			return new TranscoderFile(String.Format("{0:000} - {1}{2}", track.Number, GetSafeFileName(track.Name), Path.GetExtension(FileName)), Folder)
 			{
 				SourceFile = this,
-				StartTime = values[2],
-				EndTime = values[3]
+				StartTime = track.StartTime,
+				EndTime = track.EndTime
 			};
 		}
 
@@ -184,39 +179,6 @@ namespace Transcoder
 
 			return null;
         }
-
-		List<String> ParseCsv(String csvLine)
-		{
-			var values = new List<string>(csvLine.Split(','));
-			var returnValues = new List<string>(values.Count);
-			
-			for (int i = 0; i < values.Count; i++)
-			{
-				string value = values[i];
-				var countToHere = i + 1;
-
-				if (value.StartsWith("\"") && countToHere < values.Count)
-				{
-					var endIdx = values.FindIndex(countToHere, v => v.EndsWith("\""));
-					if (endIdx >= 0)
-                    {
-						var subValues = values.GetRange(i, endIdx - i + 1);
-						returnValues.Add(String.Join(",", subValues).Trim('\"'));
-						i = endIdx;
-                    }
-					else
-                    {
-						returnValues.Add(value);
-					}
-				}
-				else
-                {
-					returnValues.Add(value);
-                }
-			}
-
-			return returnValues;
-		}
 
 		#endregion
 
