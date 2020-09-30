@@ -178,14 +178,7 @@ namespace Transcoder
 						outputFiles = file.GetFiles(MatroskaChapter.GetChapters(ofd.FileName));
 					}
 
-					foreach (var outputFile in outputFiles)
-					{
-						try
-						{
-							TranscoderFiles.Add(outputFile);
-						}
-						catch { }
-					}
+					TranscoderFiles.Add(outputFiles);
 
 					file.Done = true;
 				}
