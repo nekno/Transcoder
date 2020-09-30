@@ -106,6 +106,7 @@ namespace Transcoder
 		void encoderComboBox_SelectedIndexChanged(object sender, EventArgs e) {
 			var selectedType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 			bitrateNumericUpDown.Enabled = selectedType.IsBitrateRequired;
+			fileExtensionTextBox.Enabled = selectedType.IsAudioCopy;
 		}
 
 		async void goButton_Click(object sender, EventArgs e) {
@@ -130,6 +131,12 @@ namespace Transcoder
 				return;
 			}
 
+			if (fileExtensionTextBox.Enabled && String.IsNullOrWhiteSpace(fileExtensionTextBox.Text))
+            {
+				MessageBox.Show("You must set a desired file extension when copying audio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
 			for (int i = 0; i < TranscoderFiles.Count; i++) {
 				var file = TranscoderFiles[i];
 				if (file.Done) {
@@ -143,6 +150,7 @@ namespace Transcoder
 			var fileIdx = 0;
 			var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
 			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
+			var fileExtension = fileExtensionTextBox.Text;
 			var outputFolder = outputTextbox.Text;
 			TokenSource = new CancellationTokenSource();
 
@@ -231,6 +239,8 @@ namespace Transcoder
 
 						if (encoderType == TranscoderFile.Type.SplitInput)
 							encoderType.FileExtension = Path.GetExtension(file.FileName);
+						else if (encoderType == TranscoderFile.Type.FFMPEG_AudioCopy)
+							encoderType.FileExtension = fileExtension;
 
 						using (var decoder = new Process())
 						using (var encoder = new Process())
@@ -326,7 +336,7 @@ namespace Transcoder
 								encoder.Kill();
 							}
 
-							if (encoder.ExitCode == 0 || file.RequiresDecoding)
+							if (encoder.ExitCode == 0 || file.RequiresDecoding || encoderType.AllowsDecoding == false)
 							{
 								fileIdx++; // goto next file
 							}
