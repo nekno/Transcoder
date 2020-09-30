@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Transcoder
 {
-	public class Track : IMediaSegment
+    public class Track : IMediaSegment
 	{
 		public static String FileExtension = ".csv";
 		public static String FileFilter = $"Comma Separated Values (*{FileExtension})|*{FileExtension}";
