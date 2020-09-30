@@ -172,13 +172,11 @@ namespace Transcoder
 
 					if (Path.GetExtension(ofd.FileName) == CSV)
 					{
-						outputFiles = from track in Track.GetTracks(ofd.FileName)
-									  select file.GetFile(track);
+						outputFiles = file.GetFiles(Track.GetTracks(ofd.FileName));
 					}
 					else if (Path.GetExtension(ofd.FileName) == XML)
                     {
-						outputFiles = from chapter in MatroskaChapter.GetChapters(ofd.FileName)
-									  select file.GetFile(chapter);
+						outputFiles = file.GetFiles(MatroskaChapter.GetChapters(ofd.FileName));
 					}
 
 					foreach (var outputFile in outputFiles)

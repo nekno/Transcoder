@@ -115,15 +115,10 @@ namespace Transcoder
             return args;
 		}
 
-		public TranscoderFile GetFile(IMediaSegment segment)
+		public IEnumerable<TranscoderFile> GetFiles<T>(IEnumerable<T> segments) where T : IMediaSegment
         {
-			return new TranscoderFile(String.Format("{0:000} - {1}{2}", segment.Number, GetSafeFileName(segment.Name), Path.GetExtension(FileName)), Folder)
-			{
-				SourceFile = this,
-				StartTime = segment.StartTime,
-				EndTime = segment.EndTime
-			};
-		}
+			return segments.Select(segment => GetFile(segment));
+        }
 
 		public String OutputFilePath(Type encoderType, String baseOutputFolder)
 		{
@@ -145,6 +140,16 @@ namespace Transcoder
 
 		#region Protected Methods
 
+		TranscoderFile GetFile<T>(T segment) where T : IMediaSegment
+		{
+			return new TranscoderFile(String.Format("{0:000} - {1}{2}", segment.Number, GetSafeFileName(segment.Name), Path.GetExtension(FileName)), Folder)
+			{
+				SourceFile = this,
+				StartTime = segment.StartTime,
+				EndTime = segment.EndTime
+			};
+		}
+
 		String GetSafeFileName(String fileName)
         {
 			var safeFileName = fileName;
@@ -155,19 +160,6 @@ namespace Transcoder
             }
 
 			return safeFileName;
-        }
-
-		private Int32? indexOfClosingQuote(List<String> values, Int32 startIdx)
-        {
-			for (int i = startIdx; i < values.Count; i++)
-            {
-				if (values[i].EndsWith("\""))
-                {
-					return i;
-                }
-            }
-
-			return null;
         }
 
 		#endregion
