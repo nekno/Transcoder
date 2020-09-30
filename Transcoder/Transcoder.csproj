@@ -71,6 +71,7 @@
     <Compile Include="IMediaSegment.cs" />
     <Compile Include="MatroskaChapter.cs" />
     <Compile Include="MediaInfoDLL.cs" />
+    <Compile Include="StreamInfo.cs" />
     <Compile Include="Track.cs" />
     <Compile Include="TranscoderFile.cs" />
     <Compile Include="MainForm.cs">
