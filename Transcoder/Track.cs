@@ -9,6 +9,8 @@ namespace Transcoder
 {
 	public class Track : IMediaSegment
 	{
+		public static String FileExtension = "*.csv";
+		public static String FileFilter = $"Comma Separated Values ({FileExtension})|{FileExtension}";
 		public String EndTime { get; protected set; }
 		public String Name { get; protected set; }
 		public Int32 Number { get; protected set; }

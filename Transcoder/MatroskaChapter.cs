@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Transcoder
+namespace Transcoder        
 {
     public class MatroskaChapter : IMediaSegment
     {
+        public static String FileExtension = "*.xml";
+        public static String FileFilter = $"Matroska Chapters ({FileExtension})|{FileExtension}";
+
         public String EndTime { get; protected set; }
         public String Name { get; protected set; }
         public Int32 Number { get; protected set; }
