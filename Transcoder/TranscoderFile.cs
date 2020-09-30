@@ -19,6 +19,7 @@ namespace Transcoder
             Type.MP3CBR,
             Type.MP3VBR,
             Type.WAV,
+			Type.FFMPEG_AudioCopy,
 			Type.TracksCSV,
 			Type.RegionsCSV,
 			Type.SplitInput,
@@ -168,6 +169,14 @@ namespace Transcoder
 		{
 			#region Static Fields
 
+			public static Type FFMPEG_AudioCopy = new Type()
+			{
+				Name = "Copy Audio",
+				Encoder = Encoder.FFMPEG,
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a copy -movflags +faststart -y \"{2}\"",
+				IsAudioCopy = true
+			};
+			
 			public static Type FFMPEG_ALAC = new Type()
 			{
 				Name = "FFMPEG ALAC",
@@ -271,7 +280,19 @@ namespace Transcoder
             public String Name { get; set; }
             public Encoder Encoder { get; set; }
             public String FileExtension { get; set; }
+			public Boolean IsAudioCopy { get; set; }
 			public Boolean IsBitrateRequired { get; set; }
+			public Boolean AllowsDecoding
+            {
+				get
+                {
+					return CommandLineArgsWithDecoding != null;
+                }
+            }
+
+			#endregion
+
+			#region Protected Properties
 
 			protected Dictionary<Int32, String> BitDepthMap { get; set; } = new Dictionary<Int32, String>();
             protected Dictionary<Int32, String> BitrateMap { get; set; } = new Dictionary<Int32, String>();
