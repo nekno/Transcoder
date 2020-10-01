@@ -40,7 +40,24 @@ namespace Transcoder
 
 			encoderComboBox.DisplayMember = "Name";
 			encoderComboBox.ValueMember = "FileExtension";
+
 			encoderComboBox.Items.AddRange(TranscoderFile.Types);
+
+			var names = new[]
+			{
+				"-======Lossy Encoders======-",
+				"-=====Lossless Encoders=====-",
+				"-=======Lossless Copies=====-",
+				"-=========Decoders========-",
+				"-======Tracks/Regions======-",
+			};
+
+			encoderComboBox.Items.Insert(0, new { Name = names[0] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.QTALAC), new { Name = names[1] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.AudioCopy), new { Name = names[2] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.WAV), new { Name = names[3] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.TracksCSV), new { Name = names[4] });
+
 			encoderComboBox.SelectedItem = TranscoderFile.Type.QTAAC;
 		}
 
@@ -104,6 +121,9 @@ namespace Transcoder
 		}
 
 		void encoderComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+			if (!(encoderComboBox.SelectedItem is TranscoderFile.Type))
+                encoderComboBox.SelectedIndex++;
+
 			var selectedType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 			bitrateNumericUpDown.Enabled = selectedType.IsBitrateRequired;
 			fileExtensionTextBox.Enabled = selectedType.IsAudioCopy;
@@ -123,6 +143,12 @@ namespace Transcoder
 
 			if (String.IsNullOrWhiteSpace(outputTextbox.Text)) {
 				MessageBox.Show("You must set the Output folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			if (!(encoderComboBox.SelectedItem is TranscoderFile.Type))
+            {
+				MessageBox.Show("You must select a transcoding type.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -239,7 +265,7 @@ namespace Transcoder
 
 						if (encoderType == TranscoderFile.Type.SplitInput)
 							encoderType.FileExtension = Path.GetExtension(file.FileName);
-						else if (encoderType == TranscoderFile.Type.FFMPEG_AudioCopy)
+						else if (encoderType == TranscoderFile.Type.AudioCopy)
 							encoderType.FileExtension = fileExtension;
 
 						using (var decoder = new Process())

@@ -13,16 +13,16 @@ namespace Transcoder
 
         public static Type[] Types = new Type[] {
 			Type.QTAAC,
+			Type.MP3CBR,
+			Type.MP3VBR,
 			Type.QTALAC,
 			Type.FFMPEG_ALAC,
             Type.FLAC,
-            Type.MP3CBR,
-            Type.MP3VBR,
-            Type.WAV,
-			Type.FFMPEG_AudioCopy,
+			Type.AudioCopy,
+			Type.SplitInput,
+			Type.WAV,
 			Type.TracksCSV,
 			Type.RegionsCSV,
-			Type.SplitInput,
 		};
 
         #endregion
@@ -169,7 +169,7 @@ namespace Transcoder
 		{
 			#region Static Fields
 
-			public static Type FFMPEG_AudioCopy = new Type()
+			public static Type AudioCopy = new Type()
 			{
 				Name = "Copy Audio",
 				Encoder = Encoder.FFMPEG,
