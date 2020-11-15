@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Transcoder
 {
-    public class StreamInfo
+	public class StreamInfo
 	{
 		public Int32? BitDepth { get; protected set; }
 		public String Duration { get; protected set; }

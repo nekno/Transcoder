@@ -18,7 +18,8 @@ namespace Transcoder
 		protected CancellationTokenSource TokenSource { get; set; }
 		protected bool Running { get; set; }
 
-		public MainForm() {
+		public MainForm()
+		{
 			InitializeComponent();
 
 			TranscoderFiles = new BindingList<TranscoderFile>();
@@ -34,7 +35,8 @@ namespace Transcoder
 			outputTextbox.DragDrop += outputTextbox_DragDrop;
 		}
 
-		void MainForm_Load(object sender, EventArgs e) {
+		void MainForm_Load(object sender, EventArgs e)
+		{
 			filesDataGridView.DataSource = TranscoderFiles;
 			filesDataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
 
@@ -61,21 +63,28 @@ namespace Transcoder
 			encoderComboBox.SelectedItem = TranscoderFile.Type.QTAAC;
 		}
 
-		void Control_DragEnter(object sender, DragEventArgs e) {
+		void Control_DragEnter(object sender, DragEventArgs e)
+		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		async void MainForm_DragDrop(object sender, DragEventArgs e) {
+		async void MainForm_DragDrop(object sender, DragEventArgs e)
+		{
 			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
 
-			await Task.Run(() => {
+			await Task.Run(() =>
+			{
 				var tfiles = new List<TranscoderFile>(paths.Length * 30); // over-estimate 30 songs per album
 
-				foreach (var path in paths) {
-					if (Directory.Exists(path)) {
+				foreach (var path in paths)
+				{
+					if (Directory.Exists(path))
+					{
 						var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
 						tfiles.AddRange(files.Where(file => TranscoderFile.IsTranscodableFile(file)).Select(file => new TranscoderFile(file, path)));
-					} else if (File.Exists(path) && TranscoderFile.IsTranscodableFile(path)) {
+					}
+					else if (File.Exists(path) && TranscoderFile.IsTranscodableFile(path))
+					{
 						tfiles.Add(new TranscoderFile(path));
 					}
 				};
@@ -84,56 +93,69 @@ namespace Transcoder
 			});
 		}
 
-		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+		void filesDataGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+		{
 			var file = TranscoderFiles[e.RowIndex];
 
-			if (file.Log.Length > 0) {
+			if (file.Log.Length > 0)
+			{
 				MessageBox.Show(file.Log.ToString(), String.Format("Log: {0}", file.FilePath));
 			}
 		}
 
-		void outputTextbox_DragDrop(object sender, DragEventArgs e) {
+		void outputTextbox_DragDrop(object sender, DragEventArgs e)
+		{
 			var paths = e.Data.GetData(DataFormats.FileDrop) as String[];
 
-			if (paths != null && Directory.Exists(paths[0])) {
+			if (paths != null && Directory.Exists(paths[0]))
+			{
 				outputTextbox.Text = paths[0];
 			}
 		}
 
 		delegate void AddFilesCallback(IEnumerable<TranscoderFile> files);
-		void AddFiles(IEnumerable<TranscoderFile> files) {
-			if (InvokeRequired) {
+		void AddFiles(IEnumerable<TranscoderFile> files)
+		{
+			if (InvokeRequired)
+			{
 				Invoke(new AddFilesCallback(AddFiles), files);
 				return;
 			}
 
-			foreach (var file in files) {
+			foreach (var file in files)
+			{
 				TranscoderFiles.Add(file);
 			}
 		}
 
-		void outputBrowseButton_Click(object sender, EventArgs e) {
+		void outputBrowseButton_Click(object sender, EventArgs e)
+		{
 			var fbd = new FolderBrowserDialog();
 
-			if (fbd.ShowDialog() == DialogResult.OK) {
+			if (fbd.ShowDialog() == DialogResult.OK)
+			{
 				outputTextbox.Text = fbd.SelectedPath;
 			}
 		}
 
-		void encoderComboBox_SelectedIndexChanged(object sender, EventArgs e) {
+		void encoderComboBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			if (!(encoderComboBox.SelectedItem is TranscoderFile.Type))
-                encoderComboBox.SelectedIndex++;
+				encoderComboBox.SelectedIndex++;
 
 			var selectedType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 			bitrateNumericUpDown.Enabled = selectedType.IsBitrateRequired;
 			fileExtensionTextBox.Enabled = selectedType.IsAudioCopy;
 		}
 
-		async void goButton_Click(object sender, EventArgs e) {
-			if (Running) {
+		async void goButton_Click(object sender, EventArgs e)
+		{
+			if (Running)
+			{
 				if (TokenSource.IsCancellationRequested) return;
 
-				TokenSource.Token.Register(() => {
+				TokenSource.Token.Register(() =>
+				{
 					setRunning(false);
 				});
 
@@ -141,36 +163,40 @@ namespace Transcoder
 				return;
 			}
 
-			if (String.IsNullOrWhiteSpace(outputTextbox.Text)) {
+			if (String.IsNullOrWhiteSpace(outputTextbox.Text))
+			{
 				MessageBox.Show("You must set the Output folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			if (!(encoderComboBox.SelectedItem is TranscoderFile.Type))
-            {
+			{
 				MessageBox.Show("You must select a transcoding type.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-			if (bitrateNumericUpDown.Value < 64 || bitrateNumericUpDown.Value > 320) {
+			if (bitrateNumericUpDown.Value < 64 || bitrateNumericUpDown.Value > 320)
+			{
 				MessageBox.Show("You must set a bitrate from 64-320.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
 			if (fileExtensionTextBox.Enabled && String.IsNullOrWhiteSpace(fileExtensionTextBox.Text))
-            {
+			{
 				MessageBox.Show("You must set a desired file extension when copying audio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
-			for (int i = 0; i < TranscoderFiles.Count; i++) {
+			for (int i = 0; i < TranscoderFiles.Count; i++)
+			{
 				var file = TranscoderFiles[i];
-				if (file.Done) {
+				if (file.Done)
+				{
 					file.ResetFile();
 					TranscoderFiles.ResetItem(i);
 				}
 			}
-				
+
 			setRunning(true);
 
 			var fileIdx = 0;
@@ -208,7 +234,7 @@ namespace Transcoder
 						outputFiles = file.GetFiles(Track.GetTracks(ofd.FileName));
 					}
 					else if (Path.GetExtension(ofd.FileName) == MatroskaChapter.FileExtension)
-                    {
+					{
 						outputFiles = file.GetFiles(MatroskaChapter.GetChapters(ofd.FileName));
 					}
 
@@ -218,21 +244,22 @@ namespace Transcoder
 				}
 			}
 
-			await Task.Run(async () => {
+			await Task.Run(async () =>
+			{
 				if (!Directory.Exists(outputFolder))
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(outputFolder);
-                    }
-                    catch (Exception ex)
-                    {
-                        updateStatus(ex.Message);
-                        return;
-                    }
-                }
+				{
+					try
+					{
+						Directory.CreateDirectory(outputFolder);
+					}
+					catch (Exception ex)
+					{
+						updateStatus(ex.Message);
+						return;
+					}
+				}
 
-                if (encoderType.Encoder.IsEncodingRequired)
+				if (encoderType.Encoder.IsEncodingRequired)
 				{
 					while (fileIdx < TranscoderFiles.Count)
 					{
@@ -401,9 +428,9 @@ namespace Transcoder
 							updateStatus(String.Format("No duration for file {0}, {1}. Skipping.", i, file.FileName));
 						}
 					});
-				} 
+				}
 				else if (encoderType == TranscoderFile.Type.RegionsCSV)
-                {
+				{
 					long totalSamples = 0;
 
 					writeCsv(Path.Combine(outputFolder, "Regions.csv"), (file, i, csvBuilder) =>
@@ -431,7 +458,7 @@ namespace Transcoder
 		}
 
 		private String quoted(String str)
-        {
+		{
 			return str.Contains(",") ? String.Format("\"{0}\"", str) : str;
 		}
 
@@ -466,8 +493,10 @@ namespace Transcoder
 		}
 
 		private delegate void RunningCallback(bool running);
-		private void setRunning(bool running) {       
-			if (InvokeRequired) {
+		private void setRunning(bool running)
+		{
+			if (InvokeRequired)
+			{
 				Invoke(new RunningCallback(setRunning), running);
 				return;
 			}
@@ -478,8 +507,10 @@ namespace Transcoder
 		}
 
 		private delegate void SelectDataGridViewRowCallback(int index);
-		private void selectDataGridViewRow(int index) {
-			if (InvokeRequired) {
+		private void selectDataGridViewRow(int index)
+		{
+			if (InvokeRequired)
+			{
 				Invoke(new SelectDataGridViewRowCallback(selectDataGridViewRow), index);
 				return;
 			}
@@ -488,8 +519,10 @@ namespace Transcoder
 		}
 
 		private delegate void ResetTranscoderFileCallback(TranscoderFile file);
-		private void resetTranscoderFile(TranscoderFile file) {
-			if (InvokeRequired) {
+		private void resetTranscoderFile(TranscoderFile file)
+		{
+			if (InvokeRequired)
+			{
 				Invoke(new ResetTranscoderFileCallback(resetTranscoderFile), file);
 				return;
 			}
@@ -499,8 +532,10 @@ namespace Transcoder
 		}
 
 		private delegate void UpdateStatusCallback(String status);
-		private void updateStatus(String status) {
-			if (InvokeRequired) {
+		private void updateStatus(String status)
+		{
+			if (InvokeRequired)
+			{
 				Invoke(new UpdateStatusCallback(updateStatus), status);
 				return;
 			}

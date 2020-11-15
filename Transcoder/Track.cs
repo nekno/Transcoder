@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Transcoder
 {
-    public class Track : IMediaSegment
+	public class Track : IMediaSegment
 	{
 		public static String FileExtension = ".csv";
 		public static String FileFilter = $"Comma Separated Values (*{FileExtension})|*{FileExtension}";
@@ -15,7 +15,7 @@ namespace Transcoder
 		public String StartTime { get; protected set; }
 
 		public Track(String csvLine)
-        {
+		{
 			var values = ParseCsv(csvLine);
 
 			if (values.Count < 4)
@@ -28,7 +28,7 @@ namespace Transcoder
 		}
 
 		public static IEnumerable<Track> GetTracks(String fileName)
-        {
+		{
 			var tracks = from csvLine in File.ReadAllLines(fileName)
 						 select new Track(csvLine);
 			return tracks;
@@ -66,5 +66,5 @@ namespace Transcoder
 
 			return returnValues;
 		}
-    }
+	}
 }

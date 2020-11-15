@@ -7,17 +7,17 @@ using System.Text;
 
 namespace Transcoder
 {
-    public class TranscoderFile
+	public class TranscoderFile
 	{
-        #region Static Fields
+		#region Static Fields
 
-        public static Type[] Types = new Type[] {
+		public static Type[] Types = new Type[] {
 			Type.QTAAC,
 			Type.MP3CBR,
 			Type.MP3VBR,
 			Type.QTALAC,
 			Type.FFMPEG_ALAC,
-            Type.FLAC,
+			Type.FLAC,
 			Type.AudioCopy,
 			Type.SplitInput,
 			Type.WAV,
@@ -25,10 +25,10 @@ namespace Transcoder
 			Type.RegionsCSV,
 		};
 
-        #endregion
+		#endregion
 
-        #region Public Properties
-		
+		#region Public Properties
+
 		public bool Done { get; set; }
 		public String EndTime { get; set; }
 		public String FileName
@@ -40,18 +40,20 @@ namespace Transcoder
 		}
 		public String FilePath { get; protected set; }
 		public String Folder { get; protected set; }
-        public StringBuilder Log { get; set; } = new StringBuilder();
+		public StringBuilder Log { get; set; } = new StringBuilder();
 		public bool RequiresDecoding { get; set; }
 		public TranscoderFile SourceFile { get; protected set; }
 		public String StartTime { get; set; }
 		public StreamInfo Stream { get; protected set; }
 
-        #endregion
+		#endregion
 
-        #region Static Methods
+		#region Static Methods
 
-        public static bool IsTranscodableFile(String filePath) {
-			using (var mediaInfo = new MediaInfo()) { 
+		public static bool IsTranscodableFile(String filePath)
+		{
+			using (var mediaInfo = new MediaInfo())
+			{
 				mediaInfo.Open(filePath);
 				var audioStreams = mediaInfo.Count_Get(StreamKind.Audio);
 
@@ -72,18 +74,20 @@ namespace Transcoder
 				//var streamLength = mediaInfo.Get(StreamKind.Audio, 0, 74, InfoKind.Text);
 
 				return audioStreams > 0;
-			} 
+			}
 		}
 
-        #endregion
+		#endregion
 
-        #region Constructors
+		#region Constructors
 
-        public TranscoderFile(String filePath, String rootFolderPath = null) {
+		public TranscoderFile(String filePath, String rootFolderPath = null)
+		{
 			FilePath = filePath;
 			Stream = new StreamInfo(filePath);
 
-			if (String.IsNullOrEmpty(filePath) || String.IsNullOrEmpty(rootFolderPath)) {
+			if (String.IsNullOrEmpty(filePath) || String.IsNullOrEmpty(rootFolderPath))
+			{
 				Folder = String.Empty;
 				return;
 			}
@@ -98,26 +102,27 @@ namespace Transcoder
 
 		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder) {
-            var args =  String.Format(
-				encoderType.CommandLineArgs(RequiresDecoding), 
+		public String BuildCommandLineArgs(Type encoderType, Int32 bitrate, String baseOutputFolder)
+		{
+			var args = String.Format(
+				encoderType.CommandLineArgs(RequiresDecoding),
 				SourceFile?.FilePath ?? FilePath, // 0
 				encoderType.BitrateArgs(bitrate), // 1
-                OutputFilePath(encoderType, baseOutputFolder), // 2
+				OutputFilePath(encoderType, baseOutputFolder), // 2
 				encoderType.BitDepthArgs(Stream.BitDepth), // 3
 				StartTime, // 4
 				EndTime // 5
 			);
 
-            return args;
+			return args;
 		}
 
 		public IEnumerable<TranscoderFile> GetFiles<T>(IEnumerable<T> segments) where T : IMediaSegment
-        {
+		{
 			return segments.Select(segment => GetFile(segment));
-        }
+		}
 
 		public String OutputFilePath(Type encoderType, String baseOutputFolder)
 		{
@@ -125,7 +130,7 @@ namespace Transcoder
 		}
 
 		public String OutputFolderPath(string baseOutputFolder)
-        {
+		{
 			return Path.Combine(baseOutputFolder, Folder);
 		}
 
@@ -150,16 +155,16 @@ namespace Transcoder
 		}
 
 		String GetSafeFileName(String fileName)
-        {
+		{
 			var safeFileName = fileName;
 
 			foreach (var chr in Path.GetInvalidFileNameChars())
-            {
+			{
 				safeFileName = safeFileName.Replace(chr, '-');
-            }
+			}
 
 			return safeFileName;
-        }
+		}
 
 		#endregion
 
@@ -176,7 +181,7 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a copy -movflags +faststart -y \"{2}\"",
 				IsAudioCopy = true
 			};
-			
+
 			public static Type FFMPEG_ALAC = new Type()
 			{
 				Name = "FFMPEG ALAC",
@@ -185,40 +190,41 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a alac -movflags +faststart -metadata:s:a gapless_playback=2 -y \"{2}\""
 			};
 
-			public static Type FLAC = new Type() { 
-				Name = "FLAC", 
-				Encoder = Encoder.FFMPEG, 
+			public static Type FLAC = new Type()
+			{
+				Name = "FLAC",
+				Encoder = Encoder.FFMPEG,
 				FileExtension = ".flac",
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -y \"{2}\""
 			};
 
-            public static Type MP3CBR = new Type()
-            {
-                Name = "MP3 (CBR)",
-                Encoder = Encoder.FFMPEG,
-                FileExtension = ".mp3",
-                IsBitrateRequired = true,
-                CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame -b:a {1}k -y \"{2}\""
-            };
+			public static Type MP3CBR = new Type()
+			{
+				Name = "MP3 (CBR)",
+				Encoder = Encoder.FFMPEG,
+				FileExtension = ".mp3",
+				IsBitrateRequired = true,
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame -b:a {1}k -y \"{2}\""
+			};
 
-            public static Type MP3VBR = new Type()
-            {
-                Name = "MP3 (VBR)",
-                Encoder = Encoder.FFMPEG,
-                FileExtension = ".mp3",
-                IsBitrateRequired = true,
-                CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame {1} -y \"{2}\"",
-                BitrateMap =
-                {
-                    { 64, "-q:a 9" },
-                    { 96, "-q:a 7" },
-                    { 128, "-q:a 5" },
-                    { 192, "-q:a 2" },
-                    { 224, "-q:a 1" },
-                    { 256, "-q:a 0" },
-                    { 320, "-b:a 320k" },
-                }
-            };
+			public static Type MP3VBR = new Type()
+			{
+				Name = "MP3 (VBR)",
+				Encoder = Encoder.FFMPEG,
+				FileExtension = ".mp3",
+				IsBitrateRequired = true,
+				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame {1} -y \"{2}\"",
+				BitrateMap =
+				{
+					{ 64, "-q:a 9" },
+					{ 96, "-q:a 7" },
+					{ 128, "-q:a 5" },
+					{ 192, "-q:a 2" },
+					{ 224, "-q:a 1" },
+					{ 256, "-q:a 0" },
+					{ 320, "-b:a 320k" },
+				}
+			};
 
 			public static Type QTAAC = new Type()
 			{
@@ -260,9 +266,10 @@ namespace Transcoder
 				FileExtension = ".csv"
 			};
 
-			public static Type WAV = new Type() { 
+			public static Type WAV = new Type()
+			{
 				Name = "WAV",
-				Encoder = Encoder.FFMPEG, 
+				Encoder = Encoder.FFMPEG,
 				FileExtension = ".wav",
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -y {3} \"{2}\"",
 				BitDepthMap =
@@ -273,30 +280,30 @@ namespace Transcoder
 				}
 			};
 
-            #endregion
+			#endregion
 
-            #region Public Properties
+			#region Public Properties
 
-            public String Name { get; set; }
-            public Encoder Encoder { get; set; }
-            public String FileExtension { get; set; }
+			public String Name { get; set; }
+			public Encoder Encoder { get; set; }
+			public String FileExtension { get; set; }
 			public Boolean IsAudioCopy { get; set; }
 			public Boolean IsBitrateRequired { get; set; }
 			public Boolean AllowsDecoding
-            {
+			{
 				get
-                {
+				{
 					return CommandLineArgsWithDecoding != null;
-                }
-            }
+				}
+			}
 
 			#endregion
 
 			#region Protected Properties
 
 			protected Dictionary<Int32, String> BitDepthMap { get; set; } = new Dictionary<Int32, String>();
-            protected Dictionary<Int32, String> BitrateMap { get; set; } = new Dictionary<Int32, String>();
-            protected String CommandLineArgsWithDecoding { get; set; }
+			protected Dictionary<Int32, String> BitrateMap { get; set; } = new Dictionary<Int32, String>();
+			protected String CommandLineArgsWithDecoding { get; set; }
 			protected String CommandLineArgsWithoutDecoding { get; set; }
 
 			#endregion
@@ -316,25 +323,25 @@ namespace Transcoder
 			}
 
 			public String BitrateArgs(Int32 bitrate)
-            {
-                if (BitrateMap.ContainsKey(bitrate))
-                {
-                    return BitrateMap[bitrate];
-                }
-                else
-                {
-                    return bitrate.ToString();
-                }
-            }
+			{
+				if (BitrateMap.ContainsKey(bitrate))
+				{
+					return BitrateMap[bitrate];
+				}
+				else
+				{
+					return bitrate.ToString();
+				}
+			}
 
-            public String CommandLineArgs(bool isDecodingRequired)
-            {
+			public String CommandLineArgs(bool isDecodingRequired)
+			{
 				return isDecodingRequired ? CommandLineArgsWithDecoding : CommandLineArgsWithoutDecoding;
-            }
+			}
 
-            #endregion
-        }
+			#endregion
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }
