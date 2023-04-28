@@ -121,9 +121,6 @@
     <None Include="tools\qaac\flac_license\COPYING.Xiph">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="tools\qaac\flac_license\README">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -148,10 +145,7 @@
     <Content Include="tools\ffmpeg\README.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="tools\qaac\flac_license\license.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="tools\qaac\libFLAC_dynamic.dll">
+    <Content Include="tools\qaac\libFLAC.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="tools\qaac\libsoxconvolver64.dll">
