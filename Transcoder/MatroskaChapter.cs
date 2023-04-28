@@ -15,20 +15,31 @@ namespace Transcoder
 		public Int32 Number { get; protected set; }
 		public String StartTime { get; protected set; }
 
-		public MatroskaChapter(XElement chapterXml, Int32 number)
+		public MatroskaChapter(XElement chapterXml, Int32 number, String endTime)
 		{
 			Number = number;
 			Name = chapterXml.Element("ChapterDisplay")?.Element("ChapterString")?.Value ?? $"Chapter {number:000}";
 			StartTime = chapterXml.Element("ChapterTimeStart").Value;
-			EndTime = chapterXml.Element("ChapterTimeEnd").Value;
+
+			try
+			{
+				// Not every chapter will have an end time, so try to use the start time of the next chapter
+				EndTime = chapterXml.Element("ChapterTimeEnd")?.Value
+					?? chapterXml.ElementsAfterSelf().First().Element("ChapterTimeStart").Value;
+			} 
+			catch
+			{
+				// For the last chapter, use sthe end time of the file
+				EndTime = endTime;
+			}
 		}
 
-		public static IEnumerable<MatroskaChapter> GetChapters(string fileName)
+		public static IEnumerable<MatroskaChapter> GetChapters(String fileName, String endTime)
 		{
 			var chapters = XElement.Load(fileName).Descendants("ChapterAtom")
 						   .Where(chapter => (chapter.Element("ChapterFlagEnabled")?.Value ?? "1") == "1")
 						   .Where(chapter => (chapter.Element("ChapterFlagHidden")?.Value ?? "0") == "0")
-						   .Select((chapter, index) => new MatroskaChapter(chapter, index + 1));
+						   .Select((chapter, index) => new MatroskaChapter(chapter, index + 1, endTime));
 			return chapters;
 		}
 	}

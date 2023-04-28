@@ -235,7 +235,7 @@ namespace Transcoder
 					}
 					else if (Path.GetExtension(ofd.FileName) == MatroskaChapter.FileExtension)
 					{
-						outputFiles = file.GetFiles(MatroskaChapter.GetChapters(ofd.FileName));
+						outputFiles = file.GetFiles(MatroskaChapter.GetChapters(ofd.FileName, file.EndTime));
 					}
 
 					TranscoderFiles.Add(outputFiles);

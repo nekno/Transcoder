@@ -85,6 +85,8 @@ namespace Transcoder
 		{
 			FilePath = filePath;
 			Stream = new StreamInfo(filePath);
+			StartTime = "00:00:00.000000";
+			EndTime = Stream.Duration;
 
 			if (String.IsNullOrEmpty(filePath) || String.IsNullOrEmpty(rootFolderPath))
 			{
