@@ -51,16 +51,16 @@ namespace Transcoder
 				"-=====Lossless Encoders=====-",
 				"-=======Lossless Copies=====-",
 				"-=========Decoders========-",
-				"-======Tracks/Regions======-",
+				"-=====Tracks / Regions=====-",
 			};
 
 			encoderComboBox.Items.Insert(0, new { Name = names[0] });
-			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.QTALAC), new { Name = names[1] });
-			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.AudioCopy), new { Name = names[2] });
-			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.WAV), new { Name = names[3] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.QT_ALAC), new { Name = names[1] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.FFMPEG_AudioCopy), new { Name = names[2] });
+			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.FFMPEG_WAV), new { Name = names[3] });
 			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.TracksCSV), new { Name = names[4] });
 
-			encoderComboBox.SelectedItem = TranscoderFile.Type.QTAAC;
+			encoderComboBox.SelectedItem = TranscoderFile.Type.QT_AAC_CVBR;
 		}
 
 		void Control_DragEnter(object sender, DragEventArgs e)
@@ -206,7 +206,7 @@ namespace Transcoder
 			var outputFolder = outputTextbox.Text;
 			TokenSource = new CancellationTokenSource();
 
-			if (encoderType == TranscoderFile.Type.SplitInput)
+			if (encoderType == TranscoderFile.Type.FFMPEG_SplitInput)
 			{
 				var files = TranscoderFiles.ToList();
 				fileIdx = files.Count;
@@ -290,9 +290,9 @@ namespace Transcoder
 							}
 						}
 
-						if (encoderType == TranscoderFile.Type.SplitInput)
+						if (encoderType == TranscoderFile.Type.FFMPEG_SplitInput)
 							encoderType.FileExtension = Path.GetExtension(file.FileName);
-						else if (encoderType == TranscoderFile.Type.AudioCopy)
+						else if (encoderType == TranscoderFile.Type.FFMPEG_AudioCopy)
 							encoderType.FileExtension = fileExtension;
 
 						using (var decoder = new Process())
@@ -301,7 +301,7 @@ namespace Transcoder
 							decoder.StartInfo = new ProcessStartInfo()
 							{
 								FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFMPEG.FilePath),
-								Arguments = String.Format("-i \"{0}\" -vn -f wav {1} -", file.FilePath, TranscoderFile.Type.WAV.BitDepthArgs(file.Stream.BitDepth)),
+								Arguments = String.Format("-i \"{0}\" -vn -f wav {1} -", file.FilePath, TranscoderFile.Type.FFMPEG_WAV.BitDepthArgs(file.Stream.BitDepth)),
 								WindowStyle = ProcessWindowStyle.Hidden,
 								CreateNoWindow = true,
 								UseShellExecute = false,

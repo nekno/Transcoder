@@ -12,15 +12,16 @@ namespace Transcoder
 		#region Static Fields
 
 		public static Type[] Types = new Type[] {
-			Type.QTAAC,
-			Type.MP3CBR,
-			Type.MP3VBR,
-			Type.QTALAC,
+			Type.QT_AAC_CVBR,
+			Type.QT_AAC_TVBR,
+			Type.FFMPEG_MP3_CBR,
+			Type.FFMPEG_MP3_VBR,
+			Type.QT_ALAC,
 			Type.FFMPEG_ALAC,
-			Type.FLAC,
-			Type.AudioCopy,
-			Type.SplitInput,
-			Type.WAV,
+			Type.FFMPEG_FLAC,
+			Type.FFMPEG_AudioCopy,
+			Type.FFMPEG_SplitInput,
+			Type.FFMPEG_WAV,
 			Type.TracksCSV,
 			Type.RegionsCSV,
 		};
@@ -176,9 +177,9 @@ namespace Transcoder
 		{
 			#region Static Fields
 
-			public static Type AudioCopy = new Type()
+			public static Type FFMPEG_AudioCopy = new Type()
 			{
-				Name = "Copy Audio",
+				Name = "FFMPEG Copy Audio",
 				Encoder = Encoder.FFMPEG,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a copy -movflags +faststart -y \"{2}\"",
 				IsAudioCopy = true
@@ -192,26 +193,26 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a alac -movflags +faststart -metadata:s:a gapless_playback=2 -y \"{2}\""
 			};
 
-			public static Type FLAC = new Type()
+			public static Type FFMPEG_FLAC = new Type()
 			{
-				Name = "FLAC",
+				Name = "FFMPEG FLAC",
 				Encoder = Encoder.FFMPEG,
 				FileExtension = ".flac",
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -y \"{2}\""
 			};
 
-			public static Type MP3CBR = new Type()
+			public static Type FFMPEG_MP3_CBR = new Type()
 			{
-				Name = "MP3 (CBR)",
+				Name = "FFMPEG MP3 (CBR)",
 				Encoder = Encoder.FFMPEG,
 				FileExtension = ".mp3",
 				IsBitrateRequired = true,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -c:a libmp3lame -b:a {1}k -y \"{2}\""
 			};
 
-			public static Type MP3VBR = new Type()
+			public static Type FFMPEG_MP3_VBR = new Type()
 			{
-				Name = "MP3 (VBR)",
+				Name = "FFMPEG MP3 (VBR)",
 				Encoder = Encoder.FFMPEG,
 				FileExtension = ".mp3",
 				IsBitrateRequired = true,
@@ -228,7 +229,7 @@ namespace Transcoder
 				}
 			};
 
-			public static Type QTAAC = new Type()
+			public static Type QT_AAC_CVBR = new Type()
 			{
 				Name = "QuickTime AAC (CVBR)",
 				Encoder = Encoder.QAAC,
@@ -238,7 +239,17 @@ namespace Transcoder
 				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -v{1} -o \"{2}\""
 			};
 
-			public static Type QTALAC = new Type()
+			public static Type QT_AAC_TVBR = new Type()
+			{
+				Name = "QuickTime AAC (TVBR)",
+				Encoder = Encoder.QAAC,
+				FileExtension = ".m4a",
+				IsBitrateRequired = true,
+				CommandLineArgsWithDecoding = "- --threading --gapless-mode 2 --copy-artwork -V{1} -o \"{2}\"",
+				CommandLineArgsWithoutDecoding = "\"{0}\" --threading --gapless-mode 2 --copy-artwork -V{1} -o \"{2}\""
+			};
+
+			public static Type QT_ALAC = new Type()
 			{
 				Name = "QuickTime ALAC",
 				Encoder = Encoder.QAAC,
@@ -254,9 +265,9 @@ namespace Transcoder
 				FileExtension = ".csv"
 			};
 
-			public static Type SplitInput = new Type()
+			public static Type FFMPEG_SplitInput = new Type()
 			{
-				Name = "Split Input File",
+				Name = "FFMPEG Split File from Tracks CSV / Chapters XML",
 				Encoder = Encoder.FFMPEG,
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -c copy -ss {4} -to {5} -y \"{2}\""
 			};
@@ -268,9 +279,9 @@ namespace Transcoder
 				FileExtension = ".csv"
 			};
 
-			public static Type WAV = new Type()
+			public static Type FFMPEG_WAV = new Type()
 			{
-				Name = "WAV",
+				Name = "FFMPEG WAV",
 				Encoder = Encoder.FFMPEG,
 				FileExtension = ".wav",
 				CommandLineArgsWithoutDecoding = "-i \"{0}\" -vn -y {3} \"{2}\"",
