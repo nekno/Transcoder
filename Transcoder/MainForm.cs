@@ -410,7 +410,7 @@ namespace Transcoder
 				{
 					var totalDuration = new TimeSpan();
 
-					writeCsv(Path.Combine(outputFolder, "Cutfile.csv"), (file, i, csvBuilder) =>
+					writeCsv(Path.Combine(outputFolder, "Tracks.csv"), (file, i, csvBuilder) =>
 					{
 						if (!String.IsNullOrEmpty(file.Stream.Duration))
 						{
