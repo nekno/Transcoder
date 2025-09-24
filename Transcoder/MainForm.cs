@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -61,6 +62,8 @@ namespace Transcoder
 			encoderComboBox.Items.Insert(encoderComboBox.Items.IndexOf(TranscoderFile.Type.TracksCSV), new { Name = names[4] });
 
 			encoderComboBox.SelectedItem = TranscoderFile.Type.QT_AAC_CVBR;
+
+			setComboBoxDropDownWidth(encoderComboBox);
 		}
 
 		void Control_DragEnter(object sender, DragEventArgs e)
@@ -455,6 +458,28 @@ namespace Transcoder
 			}, TokenSource.Token);
 
 			setRunning(false);
+		}
+		private void setComboBoxDropDownWidth(ComboBox senderComboBox)
+		{
+			int maxWidth = 0;
+
+			using (Graphics g = senderComboBox.CreateGraphics())
+			{
+				Font font = senderComboBox.Font;
+				int vertScrollBarWidth = (senderComboBox.Items.Count > senderComboBox.MaxDropDownItems) ? SystemInformation.VerticalScrollBarWidth : 0;
+
+				foreach (object item in senderComboBox.Items)
+				{
+					string itemText = item.ToString(); // Or use DisplayMember if applicable
+					int itemWidth = (int)g.MeasureString(itemText, font).Width;
+					if (itemWidth > maxWidth)
+					{
+						maxWidth = itemWidth;
+					}
+				}
+
+				senderComboBox.DropDownWidth = maxWidth + vertScrollBarWidth + 5;
+			}
 		}
 
 		private String quoted(String str)
