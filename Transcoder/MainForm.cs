@@ -149,6 +149,22 @@ namespace Transcoder
 			var selectedType = encoderComboBox.SelectedItem as TranscoderFile.Type;
 			bitrateNumericUpDown.Enabled = selectedType.IsBitrateRequired;
 			fileExtensionTextBox.Enabled = selectedType.IsAudioCopy;
+
+			sampleRateComboBox.Items.Clear();
+
+			if (selectedType.IsSampleRateRequired)
+			{
+				sampleRateComboBox.DisplayMember = "Text";
+				sampleRateComboBox.ValueMember = "Value";
+				sampleRateComboBox.Items.AddRange(selectedType.SampleRates);
+				sampleRateComboBox.SelectedIndex = 0;
+				sampleRateComboBox.Enabled = true;
+				setComboBoxDropDownWidth(sampleRateComboBox);
+			} 
+			else
+			{
+				sampleRateComboBox.Enabled = false;
+			}
 		}
 
 		async void goButton_Click(object sender, EventArgs e)
@@ -205,6 +221,7 @@ namespace Transcoder
 			var fileIdx = 0;
 			var bitrate = Convert.ToInt32(bitrateNumericUpDown.Value);
 			var encoderType = encoderComboBox.SelectedItem as TranscoderFile.Type;
+			var destinationSampleRate = sampleRateComboBox.SelectedItem as TranscoderFile.SampleRate;
 			var fileExtension = fileExtensionTextBox.Text;
 			var outputFolder = outputTextbox.Text;
 			TokenSource = new CancellationTokenSource();
@@ -438,17 +455,19 @@ namespace Transcoder
 
 					writeCsv(Path.Combine(outputFolder, "Regions.csv"), (file, i, csvBuilder) =>
 					{
-						if (file.Stream.Samples.HasValue)
+						if (file.Stream.Samples.HasValue && file.Stream.SampleRate.HasValue && !(destinationSampleRate is null))
 						{
 							updateStatus(String.Format("Adding file to CSV {0}, {1}", i, file.FileName));
 
-							csvBuilder.AppendLine(String.Join(",", (i + 1).ToString(), quoted(file.Stream.Title ?? Path.GetFileNameWithoutExtension(file.FileName)), totalSamples, file.Stream.Samples));
+							var samples = file.Stream.Samples.Value * destinationSampleRate.Value / file.Stream.SampleRate.Value;
 
-							totalSamples += file.Stream.Samples.Value;
+							csvBuilder.AppendLine(String.Join(",", (i + 1).ToString(), quoted(file.Stream.Title ?? Path.GetFileNameWithoutExtension(file.FileName)), totalSamples, samples));
+
+							totalSamples += samples;
 						}
 						else
 						{
-							updateStatus(String.Format("No sample count for file {0}, {1}. Skipping.", i, file.FileName));
+							updateStatus(String.Format("No sample count or rate for file {0}, {1}. Skipping.", i, file.FileName));
 						}
 					});
 				}

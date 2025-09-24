@@ -10,6 +10,7 @@ namespace Transcoder
 	{
 		public Int32? BitDepth { get; protected set; }
 		public String Duration { get; protected set; }
+		public Int64? SampleRate { get; protected set; }
 		public Int64? Samples { get; protected set; }
 		public String Title { get; protected set; }
 
@@ -23,7 +24,7 @@ namespace Transcoder
 				decoder.StartInfo = new ProcessStartInfo()
 				{
 					FileName = Path.Combine(Environment.CurrentDirectory, Encoder.FFPROBE.FilePath),
-					Arguments = String.Format("-sexagesimal -select_streams a -show_entries stream=bits_per_raw_sample,duration,duration_ts:format_tags=title -of flat \"{0}\"", filePath),
+					Arguments = String.Format("-sexagesimal -select_streams a -show_entries stream=bits_per_raw_sample,duration,duration_ts,sample_rate:format_tags=title -of flat \"{0}\"", filePath),
 					WindowStyle = ProcessWindowStyle.Hidden,
 					CreateNoWindow = true,
 					UseShellExecute = false,
@@ -51,10 +52,19 @@ namespace Transcoder
 					Duration = durationMatch.Groups[1].Value;
 				}
 
+				var sampleRateMatch = Regex.Match(output, "^streams.stream.0.sample_rate=\"([\\d]+)\"\r?$", RegexOptions.Multiline);
+				if (sampleRateMatch.Success && sampleRateMatch.Groups.Count == 2)
+				{
+					if (Int64.TryParse(sampleRateMatch.Groups[1].Value, out Int64 sampleRateValue))
+					{
+						SampleRate = sampleRateValue;
+					}
+				}
+
 				var samplesMatch = Regex.Match(output, "^streams.stream.0.duration_ts=([\\d]+)\r?$", RegexOptions.Multiline);
 				if (samplesMatch.Success && samplesMatch.Groups.Count == 2)
 				{
-					if (Int32.TryParse(samplesMatch.Groups[1].Value, out int samplesValue))
+					if (Int64.TryParse(samplesMatch.Groups[1].Value, out Int64 samplesValue))
 					{
 						Samples = samplesValue;
 					}

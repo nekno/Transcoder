@@ -173,6 +173,15 @@ namespace Transcoder
 
 		#region Sub Types
 
+		public class SampleRate
+		{
+			public String Text { get; set; }
+			public Int64 Value { get; set; }
+			public override string ToString()
+			{
+				return Text;
+			}
+		}
 		public class Type
 		{
 			#region Static Fields
@@ -262,7 +271,17 @@ namespace Transcoder
 			{
 				Name = "Sound Forge Regions CSV",
 				Encoder = Encoder.CSV,
-				FileExtension = ".csv"
+				FileExtension = ".csv",
+				IsSampleRateRequired = true,
+				SampleRates = new SampleRate[]
+				{
+					new SampleRate() { Text = "44.1 kHz", Value = 441000 },
+					new SampleRate() { Text = "   48 kHz",  Value = 48000 },
+					new SampleRate() { Text = "88.2 kHz",  Value = 88200 },
+					new SampleRate() { Text = "   96 kHz", Value = 96000 },
+					new SampleRate() { Text = " 192 kHz",  Value = 192000 },
+					new SampleRate() { Text = " 384 kHz",  Value = 384000 }
+				}
 			};
 
 			public static Type FFMPEG_SplitInput = new Type()
@@ -302,6 +321,8 @@ namespace Transcoder
 			public String FileExtension { get; set; }
 			public Boolean IsAudioCopy { get; set; }
 			public Boolean IsBitrateRequired { get; set; }
+			public Boolean IsSampleRateRequired {  get; set; }
+			public SampleRate[] SampleRates { get; set; } = new SampleRate[] { };
 			public Boolean AllowsDecoding
 			{
 				get
